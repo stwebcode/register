@@ -32,6 +32,38 @@ if(isset($_SESSION['user_id']))
     <div id="msg"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
+        const ErrorType = {
+            USERNAME: "username",
+            PASSWORD: "password",
+            VER_PASSWORD: "password_verify"
+        }
+
+        const errorClear = () => {
+            $('#username_msg').text('')
+            $('#password_msg').text('')
+            $('#verify_password_msg').text('')
+        }
+
+        const errorOut = (type, message) => {
+            switch(type){
+                case ErrorType.USERNAME:
+                    $('#username_msg').text(message)
+                    break
+                
+                case ErrorType.PASSWORD:
+                    $('#password_msg').text(message)
+                    break
+                
+                case ErrorType.VER_PASSWORD:
+                    $('#verify_password_msg').text(message)
+                    break
+                
+                default:
+                    break
+            }
+        }
+
         $( document ).ready(function() {
             $('#register').click(myFunction)
 

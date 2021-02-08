@@ -3,6 +3,46 @@ require_once 'config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+
+function out(string $message, bool $is_error=false, string $type="default"){
+
+    /*
+                        out() - izvades funkcija
+
+    Šo funkciju jālieto gadījumos ja serveris izvada informāciju klientam.
+    Katru reizi kad kaut kas tiek izvadīts ar šo funkciju, skripts apstājas, tādā
+    veidā samazinot if/else statement lietošanu.
+
+    @author: CracX
+
+    */
+
+    switch($is_error){
+        case true:
+            $out = array(
+                "error" => true,
+                "message" => $message,
+                "type" => $type
+            );
+            break;
+        
+        case false:
+            $out = array(
+                "success" => true,
+                "message" => $message
+            );
+            break;
+
+        default:
+            $out = array(
+                "success" => true,
+                "message" => $message
+            );
+    }
+
+    die(json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+}
+
 if($_POST['action'] == "insert_user"){
     $errors = false;
   
@@ -14,43 +54,28 @@ if($_POST['action'] == "insert_user"){
     $output = [];
 
     if(strlen($username) < 5){
-        $errors = true;
-        $output["username_error"] = true;
-        $output["username_msg"] = "Lietotājvārdam jābūt vismaz 5 simbolus garam";
-    } else {
-        //Ja ievadīts lietotājvārds, kurš garāks par 4 simboliem, tad pārbauda vai tāds jau eksistē DB
-        $is_available = "SELECT * FROM users WHERE username = '$username'";
-        if($result = mysqli_query($con, $is_available)){
-            if(mysqli_num_rows($result) == 1){
-                $errors = true;
-                $output["username_error"] = true;
-                $output["username_msg"] = "Lietotājvārds jau ir aizņemts";
-            }
+        out("Lietotājvārdam jābūt vismaz 5 simbolus garam", $is_error=true, $type="username_error");
+    }
+
+    //Ja ievadīts lietotājvārds, kurš garāks par 4 simboliem, tad pārbauda vai tāds jau eksistē DB
+    $is_available = "SELECT * FROM users WHERE username = '$username'";
+    if($result = mysqli_query($con, $is_available)){
+        if(mysqli_num_rows($result) == 1){
+            $errors = true;
+            $output["username_error"] = true;
+            $output["username_msg"] = "Lietotājvārds jau ir aizņemts";
         }
     }
 
     if(strlen($password) < 5){
-        $errors = true;
-        $output["password_error"] = true;
-        $output["password_msg"] = "Parolei jābūt vismaz 5 simbolus garai";
-    }
-    if(!empty($output)){
-        echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        out("Parolei jābūt vismaz 5 simbolus garai", $is_error=true, $type="password_error");
     }
 
-    if(!$errors){//Ja nav eroru, tad reģistrē
-        $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$hash', NOW())";
-        $result = mysqli_query($con, $insert_query);
-        if($result){
-            $output = array(
-                "success" => true,
-                "msg"   => "Lietotājs veiksmīgi reģistrēts"
-            );
-            echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        }
+    //Ja nav eroru, tad reģistrē
+    $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$hash', NOW())";
+    $result = mysqli_query($con, $insert_query);
+    if($result){
+        out("Lietotājs veiksmīgi reģistrēts");
     }
-
-
-    
 }
 ?>
