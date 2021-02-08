@@ -1,6 +1,8 @@
 <?php
 require_once 'config.php';
 
+header('Content-Type: application/json; charset=utf-8');
+
 if($_POST['action'] == "insert_user"){
     $errors = false;
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
@@ -31,7 +33,7 @@ if($_POST['action'] == "insert_user"){
         $output["password_msg"] = "Parolei jābūt vismaz 5 simbolus garai";
     }
     if(!empty($output)){
-        echo json_encode($output);
+        echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 
     if(!$errors){//Ja nav eroru, tad reģistrē
@@ -42,7 +44,7 @@ if($_POST['action'] == "insert_user"){
                 "success" => true,
                 "msg"   => "Lietotājs veiksmīgi reģistrēts"
             );
-            echo json_encode($output);
+            echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
     }
 
