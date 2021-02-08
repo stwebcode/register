@@ -6,7 +6,9 @@ header('Content-Type: application/json; charset=utf-8');
 if($_POST['action'] == "insert_user"){
     $errors = false;
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
-    $password = password_hash($_POST['password'], PASSWORD_ARGON2I);
+    $password = $_POST['password'];
+
+    $hash = password_hash($password, PASSWORD_ARGON2I);
 
     $output = [];
 
@@ -37,7 +39,7 @@ if($_POST['action'] == "insert_user"){
     }
 
     if(!$errors){//Ja nav eroru, tad reģistrē
-        $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$password', NOW())";
+        $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$hash', NOW())";
         $result = mysqli_query($con, $insert_query);
         if($result){
             $output = array(
