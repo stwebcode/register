@@ -3,9 +3,9 @@ require_once 'config.php';
 
 if($_POST['action'] == "insert_user"){
     $errors = false;
-    $username = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');//Te Valdemārs
-    $password = $_POST['password'];//Te Valdemārs
-    //Kāds šifrēšanas algoritms? Vai DB `users` tabulā vajag kolonu `salt`?
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
+    $password = password_hash($_POST['password'], PASSWORD_ARGON2I);
+
     $output = [];
 
     if(strlen($username) < 4){
