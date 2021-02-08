@@ -1,12 +1,16 @@
 <?php
 require_once 'config.php';
 
+header('Content-Type: application/json; charset=utf-8');
+
 if($_POST['action'] == "insert_user"){
     $errors = false;
-    $username = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');//Te Valdemārs
-    $password = $_POST['password'];//Te Valdemārs
-    $verify_password = $_POST['verify_password'];
-    //Kāds šifrēšanas algoritms? Vai DB `users` tabulā vajag kolonu `salt`?
+  
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
+    $password = $_POST['password'];
+
+    $hash = password_hash($password, PASSWORD_ARGON2I);
+
     $output = [];
 
     if(strlen($username) < 4){
@@ -38,18 +42,18 @@ if($_POST['action'] == "insert_user"){
         $output["password_msg"] = "Parolei jābūt vismaz 5 simbolus garai";
     }
     if(!empty($output)){
-        echo json_encode($output);
+        echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 
     if(!$errors){//Ja nav eroru, tad reģistrē
-        $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$password', NOW())";
+        $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$hash', NOW())";
         $result = mysqli_query($con, $insert_query);
         if($result){
             $output = array(
                 "success" => true,
                 "msg"   => "Lietotājs veiksmīgi reģistrēts"
             );
-            echo json_encode($output);
+            echo json_encode($output, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
     }
 
