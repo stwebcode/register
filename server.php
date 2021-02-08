@@ -5,6 +5,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 if($_POST['action'] == "insert_user"){
     $errors = false;
+  
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
