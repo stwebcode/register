@@ -62,8 +62,7 @@ if(isset($_SESSION['user_id']))
                             }
                             if(data.success){
                                 $('#msg').text(data.msg)
-                            }
-                            
+                            }           
                         }
                     })
                 } else if (verify_password != password) {
@@ -76,7 +75,6 @@ if(isset($_SESSION['user_id']))
                     }
                 }
             }
-            
         });
     </script>
 </body>
