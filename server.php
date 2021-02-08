@@ -5,6 +5,7 @@ if($_POST['action'] == "insert_user"){
     $errors = false;
     $username = htmlentities($_POST['username'], ENT_QUOTES, 'UTF-8');//Te Valdemārs
     $password = $_POST['password'];//Te Valdemārs
+    $verify_password = $_POST['verify_password'];
     //Kāds šifrēšanas algoritms? Vai DB `users` tabulā vajag kolonu `salt`?
     $output = [];
 
@@ -24,6 +25,12 @@ if($_POST['action'] == "insert_user"){
         }
     }
 
+    //Ja paroles nesakrīt, tad izvada, ka paroles nesakrīt
+    if($password != $verify_password) {
+        $errors = true;
+        $output["verify_password_error"] = true;
+        $output["verify_password_msg"] = "Paroles nesakrīt";
+    }
 
     if(strlen($password) < 4){
         $errors = true;
