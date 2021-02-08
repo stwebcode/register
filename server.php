@@ -5,6 +5,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 if($_POST['action'] == "insert_user"){
     $errors = false;
+  
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
@@ -12,7 +13,7 @@ if($_POST['action'] == "insert_user"){
 
     $output = [];
 
-    if(strlen($username) < 4){
+    if(strlen($username) < 5){
         $errors = true;
         $output["username_error"] = true;
         $output["username_msg"] = "Lietotājvārdam jābūt vismaz 5 simbolus garam";
@@ -28,8 +29,7 @@ if($_POST['action'] == "insert_user"){
         }
     }
 
-
-    if(strlen($password) < 4){
+    if(strlen($password) < 5){
         $errors = true;
         $output["password_error"] = true;
         $output["password_msg"] = "Parolei jābūt vismaz 5 simbolus garai";
