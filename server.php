@@ -16,7 +16,7 @@ abstract Class ErrorType{
     const NONE = "none";
 }
 
-function out(string $message, bool $is_error=false, string $type=ErrorType::NONE){
+function out($message, bool $is_error=false, string $type=ErrorType::NONE){
 
     /*
                             out() - izvades funkcija
