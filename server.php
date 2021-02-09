@@ -91,9 +91,7 @@ if($_POST['action'] == "insert_user"){
     $is_available = "SELECT * FROM users WHERE username = '$username'";
     if($result = mysqli_query($con, $is_available)){
         if(mysqli_num_rows($result) == 1){
-            $errors = true;
-            $output["username_error"] = true;
-            $output["username_msg"] = "Lietotājvārds jau ir aizņemts";
+            out("Lietotājvārds jau ir aizņemts", $is_error=true, ErrorType::USERNAME);
         }
     }
 
