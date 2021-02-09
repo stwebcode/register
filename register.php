@@ -26,56 +26,126 @@ if(isset($_SESSION['user_id']))
 <body>
     <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><span id="username_msg"></span><br>
     <input type="text" id="password" placeholder="Parole" autocomplete="off"><span id="password_msg"></span><br>
-    <!-- Paroles apstiprināšana to ievadot otrreiz -->
     <input type="text" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><span id="verify_password_msg"></span><br>
     <div id="register">Reģistrēties</div>
     <div id="msg"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $( document ).ready(function() {
-            $('#register').click(myFunction)
 
-            function myFunction(){
-                var username = $('#username').val()
-                var password = $('#password').val()
-                var verify_password = $('#verify_password').val()
+        // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
+        const ErrorType = {
 
-                if(verify_password === password) { //Te Jānis, ideja tāda, ka vispirms frontendā pārbauda vai paroles ir vienādas, ja ir tad tikai pēc tam sūta datus uz serveri. Ja abos paroļu laukos ir tukšums, tad serveris pārbauda paroles garumu
-                    $('#verify_password_msg').text('')
-                    $.ajax({
-                        url: 'server.php',
-                        method: 'post',
-                        dataType: 'json',
-                        data: {
-                            action: 'insert_user',
-                            username: username,
-                            password: password
-                        },
-                        success: function(data){
-                            $('#username_msg').text('')
-                            $('#password_msg').text('')
-                            if(data.username_error){
-                                $('#username_msg').text(data.username_msg)
-                            }
-                            if(data.password_error){
-                                $('#password_msg').text(data.password_msg)
-                            }
-                            if(data.success){
-                                $('#msg').text(data.msg)
-                            }           
-                        }
-                    })
-                } else if (verify_password != password) {
-                    $('#verify_password_msg').text('Paroles nesakrīt')
-                    if(username.length > 4) { //Šeit noņem error messages, ja paroles nesakrīt, bet username vai parole ir garāka par 4 simboliem, jo savādāk errori nepazūd, jo uz serveri datus sūta tikai tad, ja paroles sakrīt. Error par to, ka tāds username jau pastāv, parādās tikai tad, ja vēlreiz nospiež reģistrēties, jo to pārbauda serveris.
-                        $('#username_msg').text('')
-                    }
-                    if(password.length > 4) {
-                        $('#password_msg').text('')
-                    }
-                }
+            // Error tips lietotājvārdu kļūdām
+            USERNAME: "username",
+
+            // Error tips paroļu kļūdām
+            PASSWORD: "password",
+
+            // Error tips atkārtotas paroles kļūdām
+            VER_PASSWORD: "password_verify",
+
+            // Ziņojuma tips veiksmīgiem ziņojumiem
+            SUCCESS: "success"
+        }
+
+        // Funckija, kas iztīra error laukus
+        const errorClear = () => {
+            $('#username_msg').text('')
+            $('#password_msg').text('')
+            $('#verify_password_msg').text('')
+        }
+
+        // Funkcija, kas parāda <message> vietā <type> (ErrorType)
+        const errorOut = (type, message) => {
+
+            // Skatoties pēc tipa, izvadam ziņojumu/kļūdu
+            switch(type){
+                case ErrorType.USERNAME:
+                    $('#username_msg').text(message)
+                    break
+                
+                case ErrorType.PASSWORD:
+                    $('#password_msg').text(message)
+                    break
+                
+                case ErrorType.VER_PASSWORD:
+                    $('#verify_password_msg').text(message)
+                    break
+                
+                case ErrorType.SUCCESS:
+                    $('#msg').text(message)
+                    break
+                
+                default:
+                    break
             }
+        }
+
+        // Sākuma funkcija - tiek palaista lapas ielādes beigās.
+        $( document ).ready(function() {
+            $('#register').click(registerUser)
         });
+
+        // Funkcija, kas reģistrē lietotāju
+        function registerUser(){
+            var username = $('#username').val()
+            var password = $('#password').val()
+            var verify_password = $('#verify_password').val()
+
+            // iztīram ziņojumus
+            errorClear();
+
+            // Pārbaudam ievadīto lietotājvārdu
+            if(username.length < 5) {
+                errorOut(ErrorType.USERNAME, "Lietotājvārdam jābūt vismaz 5 simbolus garam")
+                return
+            }
+
+            // Pārbaudam ievadīto paroli
+            if(password.length < 5) {
+                errorOut(ErrorType.PASSWORD, "Parolei jābūt vismaz 5 simbolus garai")
+                return
+            }
+
+            // Pārbaudam abu ievadīto paroļu līdzību
+            if (verify_password != password) {
+                errorOut(ErrorType.VER_PASSWORD, "Paroles nesakrīt")
+                return
+            }
+
+            // Ja neviens no erroriem netika triggerots, sūtam pieprasījumu serverim
+            $.post("server.php", {
+                    action: "insert_user",
+                    username: username,
+                    password: password
+
+                // Ja serveris atbild ar 200 (Success)
+                }, (data) => {
+                    errorOut(ErrorType.SUCCESS, data.message)
+                    return;
+
+                // Ja serveris atbild ar 404, 500 u.c. (Not found / Failed)
+                }).fail((data) => {
+
+                    // Skatamies kāda tipa error serveris atsūta, uz to arī reaģējam
+                    switch(data.responseJSON.type){
+                        case "username_error":
+                            errorOut(ErrorType.USERNAME, data.responseJSON.message)
+                            break
+                        
+                        case "password_error":
+                            errorOut(ErrorType.PASSWORD, data.responseJSON.message)
+                            break
+                        
+                        default:
+                            // Ja nav definēts servera errors tad klientam izvadīsies atbildes dump konsolē (response dump)
+                            console.log(data)
+                            break
+                    }
+                    return;
+                })
+            }
+
     </script>
 </body>
 </html>
