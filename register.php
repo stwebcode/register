@@ -11,6 +11,9 @@ if(isset($_SESSION['user_id']))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="croppie.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="croppie.js"></script>
     <style>
         #username_msg, #password_msg, #verify_password_msg {
             color: red;
@@ -24,6 +27,23 @@ if(isset($_SESSION['user_id']))
     </style>
 </head>
 <body>
+    <div id="imageContainer">
+        <img id="croppieImg" class="uImg" src = "placeholder.png">
+        <div id="addImg">+</div>
+        <!-- <input type="submit" class="delett" value='+' name="addImg"> -->
+        <!-- href="../croppie/index" -->
+        <!-- TODO: nomainīt a uz input type submit un saglabāt ievietoto info starp bildes ievadi-->
+    </div>
+    <div id="croppieWindow" style="display:none;">
+        <div id="myform">
+            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+            <div id="vanilla-demo"><div id="warn">Upload an image first!</div></div>
+            <label for="fileToUpload">Choose a file</label>
+            <input id="doneButton" type="button" value="done" class="vanilla-result">
+            <div id="demo"></div>
+        </div>
+    </div>
+
     <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><span id="username_msg"></span><br>
     <input type="text" id="password" placeholder="Parole" autocomplete="off"><span id="password_msg"></span><br>
     <input type="text" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><span id="verify_password_msg"></span><br>
@@ -84,6 +104,9 @@ if(isset($_SESSION['user_id']))
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
             $('#register').click(registerUser)
+        });
+        $('#addImg').click(function(){
+            $('#croppieWindow').show();
         });
 
         // Funkcija, kas reģistrē lietotāju
@@ -146,6 +169,66 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
+        var imageuploaded;
+        var overlay = document.getElementById('warn');
+        var el = document.getElementById('vanilla-demo');
+        var vanilla = new Croppie(el, {
+            viewport: { width: 200, height: 200, type: 'circle'},
+            boundary: { width: 250, height: 250 },
+            showZoomer: false,
+        });
+        function loadImageIntoCroppie(){
+            if(imageuploaded == undefined){
+                $("#doneButton").prop("disabled",true);
+                $("#warn").css("visibility","visible");
+            }else{
+                $("#doneButton").prop("disabled",false);
+                $("#warn").css("visibility","hidden");
+                vanilla.bind({
+                    url: imageuploaded,
+                });
+            }
+        }loadImageIntoCroppie();
+
+        $("#doneButton").click(function(){
+            vanilla.result({
+                type: 'blob',
+                //size: { width: 100, height: 100 },
+                circle: false
+                }).then(function(blob) {
+                    image = blob;
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob); 
+                    reader.onloadend = function() {
+                        $("#croppieImg").attr("src",reader.result);
+                    }
+                    $('#croppieWindow').hide();
+            });
+        });
+
+        $('#fileToUpload').on("input",function(){
+            var file = $(this)[0].files[0];
+            var formData = new FormData();
+
+            formData.append("file", file, file.name);
+            formData.append("upload_file", true);
+            
+            $.ajax({
+                url: 'upload.php',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data){
+                    if(data.includes("tmp")){
+                        imageuploaded = data;
+                    }else{
+                        alert(data);
+                    }
+                    loadImageIntoCroppie();
+                }
+            });
+        });
     </script>
 </body>
 </html>
