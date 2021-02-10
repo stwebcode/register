@@ -13,11 +13,17 @@ if(isset($_SESSION['user_id']))
     <title>Document</title>
 </head>
 <body>
-    <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><span id="username_msg"></span><br>
-    <input type="text" id="password" placeholder="Parole" autocomplete="off"><span id="password_msg"></span><br>
-    <input type="text" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><span id="verify_password_msg"></span><br>
-    <div id="register">Reģistrēties</div>
-    <div id="msg"></div>
+    <div class="register-box">
+        <h1>Reģistrācija</h1>
+        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><br>
+        <span id="username_msg"></span><br>
+        <input type="password" id="password" placeholder="Parole" autocomplete="off"><br>
+        <span id="password_msg"></span><br>
+        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><br>
+        <span id="verify_password_msg"></span><br><br>
+        <div id="register">Reģistrēties</div><br><br>
+        <div id="msg"></div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script>
