@@ -37,9 +37,9 @@ if(isset($_SESSION['user_id']))
     <div id="croppieWindow" style="display:none;">
         <div id="myform">
             <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
-            <div id="vanilla-demo"><div id="warn">Upload an image first!</div></div>
+            <div id="vanilla-demo"><div id="warn" style="visibility: visible;">Upload an image first!</div></div>
             <label for="fileToUpload">Choose a file</label>
-            <input id="doneButton" type="button" value="done" class="vanilla-result">
+            <input id="doneButton" type="button" value="done" class="vanilla-result" disabled="">
             <div id="demo"></div>
         </div>
     </div>
@@ -103,10 +103,15 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
-            $('#register').click(registerUser)
-        });
-        $('#addImg').click(function(){
-            $('#croppieWindow').show();
+
+            $('#register').click(registerUser);
+
+            $('#addImg').click(function(){
+                $('#croppieWindow').show();
+            });
+
+            $('#fileToUpload').on("input",function(){readFile(this);});
+            $("#doneButton").click(cropImage);
         });
 
         // Funkcija, kas reģistrē lietotāju
@@ -169,34 +174,21 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
-        var imageuploaded;
-        var overlay = document.getElementById('warn');
+        var imageBlob;
         var el = document.getElementById('vanilla-demo');
         var vanilla = new Croppie(el, {
             viewport: { width: 200, height: 200, type: 'circle'},
             boundary: { width: 250, height: 250 },
             showZoomer: false,
         });
-        function loadImageIntoCroppie(){
-            if(imageuploaded == undefined){
-                $("#doneButton").prop("disabled",true);
-                $("#warn").css("visibility","visible");
-            }else{
-                $("#doneButton").prop("disabled",false);
-                $("#warn").css("visibility","hidden");
-                vanilla.bind({
-                    url: imageuploaded,
-                });
-            }
-        }loadImageIntoCroppie();
 
-        $("#doneButton").click(function(){
+        function cropImage(){
             vanilla.result({
                 type: 'blob',
                 //size: { width: 100, height: 100 },
                 circle: false
                 }).then(function(blob) {
-                    image = blob;
+                    imageBlob = blob;
                     var reader = new FileReader();
                     reader.readAsDataURL(blob); 
                     reader.onloadend = function() {
@@ -204,31 +196,28 @@ if(isset($_SESSION['user_id']))
                     }
                     $('#croppieWindow').hide();
             });
-        });
+        }
 
-        $('#fileToUpload').on("input",function(){
-            var file = $(this)[0].files[0];
-            var formData = new FormData();
-
-            formData.append("file", file, file.name);
-            formData.append("upload_file", true);
-            
-            $.ajax({
-                url: 'upload.php',
-                method: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(data){
-                    if(data.includes("tmp")){
-                        imageuploaded = data;
-                    }else{
-                        alert(data);
-                    }
-                    loadImageIntoCroppie();
-                }
-            });
-        });
+        function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+					// $('.upload-demo').addClass('ready');
+	            	vanilla.bind({
+	            		url: e.target.result
+	            	}).then(function(){
+	            		console.log('jQuery bind complete');
+                        $("#doneButton").prop("disabled",false);
+                        $("#warn").css("visibility","hidden");
+	            	});
+	            }
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        console.log("Sorry - your browser doesn't support the FileReader API");
+		    }
+		}
     </script>
 </body>
 </html>
