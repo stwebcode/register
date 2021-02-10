@@ -11,40 +11,38 @@ if(isset($_SESSION['user_id']))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="croppie.js"></script>
     <link rel="stylesheet" href="croppie.css" />
     <link rel="stylesheet" href="style.css" />
-    <script src="croppie.js"></script>
 </head>
 <body style="background-color: rgb(17, 17, 17);">
+    <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
+        <div id="myform">
+            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+            <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
+            <div id="buttons-container">
+                <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
+                <input id="doneButton" class="button" type="button" value="Gatavs" class="vanilla-result" disabled="">
+            </div>
+        </div>
+    </div>
+
     <div class="register-box">
         <h1>Reģistrācija</h1>
         <div id="imageContainer">
-            <img id="croppieImg" class="uImg" src = "placeholder.png">
+            <img id="croppieImg" src="placeholder.png">
             <div id="addImg">+</div>
-            <!-- <input type="submit" class="delett" value='+' name="addImg"> -->
-            <!-- href="../croppie/index" -->
-            <!-- TODO: nomainīt a uz input type submit un saglabāt ievietoto info starp bildes ievadi-->
         </div>
-        <div id="croppieWindow" style="display:none;">
-            <div id="myform">
-                <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
-                <div id="vanilla-demo"><div id="warn" style="visibility: visible;">Upload an image first!</div></div>
-                <label for="fileToUpload">Choose a file</label>
-                <input id="doneButton" type="button" value="done" class="vanilla-result" disabled="">
-                <div id="demo"></div>
-            </div>
-        </div>
-        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><br>
-        <span id="username_msg"></span><br>
-        <input type="password" id="password" placeholder="Parole" autocomplete="off"><br>
-        <span id="password_msg"></span><br>
-        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><br>
-        <span id="verify_password_msg"></span><br><br>
-        <div id="register">Reģistrēties</div><br><br>
+        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
+        <span id="username_msg"></span>
+        <input type="password" id="password" placeholder="Parole" autocomplete="off">
+        <span id="password_msg"></span>
+        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
+        <span id="verify_password_msg"></span>
+        <div id="register">Reģistrēties</div>
         <div id="msg"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style.css">
     <script>
 
         // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
