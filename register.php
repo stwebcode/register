@@ -11,17 +11,6 @@ if(isset($_SESSION['user_id']))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        #username_msg, #password_msg, #verify_password_msg {
-            color: red;
-        }
-        #msg {
-            color: green;
-        }
-        #register {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><span id="username_msg"></span><br>
@@ -30,6 +19,7 @@ if(isset($_SESSION['user_id']))
     <div id="register">Reģistrēties</div>
     <div id="msg"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <script>
 
         // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
@@ -98,18 +88,21 @@ if(isset($_SESSION['user_id']))
 
             // Pārbaudam ievadīto lietotājvārdu
             if(username.length < 5) {
+                errorAnim('#username')
                 errorOut(ErrorType.USERNAME, "Lietotājvārdam jābūt vismaz 5 simbolus garam")
                 return
             }
 
             // Pārbaudam ievadīto paroli
             if(password.length < 5) {
+                errorAnim('#password')
                 errorOut(ErrorType.PASSWORD, "Parolei jābūt vismaz 5 simbolus garai")
                 return
             }
 
             // Pārbaudam abu ievadīto paroļu līdzību
             if (verify_password != password) {
+                errorAnim('#verify_password')
                 errorOut(ErrorType.VER_PASSWORD, "Paroles nesakrīt")
                 return
             }
@@ -131,6 +124,7 @@ if(isset($_SESSION['user_id']))
                     // Skatamies kāda tipa error serveris atsūta, uz to arī reaģējam
                     switch(data.responseJSON.type){
                         case "username_error":
+                            errorAnim('#username')
                             errorOut(ErrorType.USERNAME, data.responseJSON.message)
                             break
                         
@@ -145,6 +139,14 @@ if(isset($_SESSION['user_id']))
                     }
                     return;
                 })
+            }
+
+            // Funkcija, kas pievieno un noņem klasi 'bounce' (error animāciju)
+            function errorAnim(input) { // input vietā liek attiecīgo input field, piemēram, '#username'
+                $(input).addClass('bounce')
+                setTimeout(() => {
+                    $(input).removeClass('bounce')
+                }, 1000);
             }
 
     </script>
