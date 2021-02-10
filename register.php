@@ -14,42 +14,37 @@ if(isset($_SESSION['user_id']))
     <link rel="stylesheet" href="croppie.css" />
     <link rel="stylesheet" href="style.css" />
     <script src="croppie.js"></script>
-    <style>
-        #username_msg, #password_msg, #verify_password_msg {
-            color: red;
-        }
-        #msg {
-            color: green;
-        }
-        #register {
-            cursor: pointer;
-        }
-    </style>
 </head>
-<body>
-    <div id="imageContainer">
-        <img id="croppieImg" class="uImg" src = "placeholder.png">
-        <div id="addImg">+</div>
-        <!-- <input type="submit" class="delett" value='+' name="addImg"> -->
-        <!-- href="../croppie/index" -->
-        <!-- TODO: nomainīt a uz input type submit un saglabāt ievietoto info starp bildes ievadi-->
-    </div>
-    <div id="croppieWindow" style="display:none;">
-        <div id="myform">
-            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
-            <div id="vanilla-demo"><div id="warn" style="visibility: visible;">Upload an image first!</div></div>
-            <label for="fileToUpload">Choose a file</label>
-            <input id="doneButton" type="button" value="done" class="vanilla-result" disabled="">
-            <div id="demo"></div>
+<body style="background-color: rgb(17, 17, 17);">
+    <div class="register-box">
+        <h1>Reģistrācija</h1>
+        <div id="imageContainer">
+            <img id="croppieImg" class="uImg" src = "placeholder.png">
+            <div id="addImg">+</div>
+            <!-- <input type="submit" class="delett" value='+' name="addImg"> -->
+            <!-- href="../croppie/index" -->
+            <!-- TODO: nomainīt a uz input type submit un saglabāt ievietoto info starp bildes ievadi-->
         </div>
+        <div id="croppieWindow" style="display:none;">
+            <div id="myform">
+                <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+                <div id="vanilla-demo"><div id="warn" style="visibility: visible;">Upload an image first!</div></div>
+                <label for="fileToUpload">Choose a file</label>
+                <input id="doneButton" type="button" value="done" class="vanilla-result" disabled="">
+                <div id="demo"></div>
+            </div>
+        </div>
+        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><br>
+        <span id="username_msg"></span><br>
+        <input type="password" id="password" placeholder="Parole" autocomplete="off"><br>
+        <span id="password_msg"></span><br>
+        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><br>
+        <span id="verify_password_msg"></span><br><br>
+        <div id="register">Reģistrēties</div><br><br>
+        <div id="msg"></div>
     </div>
-
-    <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><span id="username_msg"></span><br>
-    <input type="text" id="password" placeholder="Parole" autocomplete="off"><span id="password_msg"></span><br>
-    <input type="text" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><span id="verify_password_msg"></span><br>
-    <div id="register">Reģistrēties</div>
-    <div id="msg"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <script>
 
         // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
@@ -103,15 +98,14 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
-
-            $('#register').click(registerUser);
-
             $('#addImg').click(function(){
                 $('#croppieWindow').show();
             });
 
             $('#fileToUpload').on("input",function(){readFile(this);});
             $("#doneButton").click(cropImage);
+            $("#username").focus() //Kad ielādējas lapa tad var ievadīt username, nav jāspiež uz tā
+            $('#register').click(registerUser)
         });
 
         // Funkcija, kas reģistrē lietotāju
@@ -125,18 +119,21 @@ if(isset($_SESSION['user_id']))
 
             // Pārbaudam ievadīto lietotājvārdu
             if(username.length < 5) {
+                errorAnim('#username')
                 errorOut(ErrorType.USERNAME, "Lietotājvārdam jābūt vismaz 5 simbolus garam")
                 return
             }
 
             // Pārbaudam ievadīto paroli
             if(password.length < 5) {
+                errorAnim('#password')
                 errorOut(ErrorType.PASSWORD, "Parolei jābūt vismaz 5 simbolus garai")
                 return
             }
 
             // Pārbaudam abu ievadīto paroļu līdzību
             if (verify_password != password) {
+                errorAnim('#verify_password')
                 errorOut(ErrorType.VER_PASSWORD, "Paroles nesakrīt")
                 return
             }
@@ -158,6 +155,7 @@ if(isset($_SESSION['user_id']))
                     // Skatamies kāda tipa error serveris atsūta, uz to arī reaģējam
                     switch(data.responseJSON.type){
                         case "username_error":
+                            errorAnim('#username')
                             errorOut(ErrorType.USERNAME, data.responseJSON.message)
                             break
                         
@@ -218,6 +216,14 @@ if(isset($_SESSION['user_id']))
 		        console.log("Sorry - your browser doesn't support the FileReader API");
 		    }
 		}
+            // Funkcija, kas pievieno un noņem klasi 'bounce' (error animāciju)
+            function errorAnim(input) { // input vietā liek attiecīgo input field, piemēram, '#username'
+                $(input).addClass('bounce')
+                setTimeout(() => {
+                    $(input).removeClass('bounce')
+                }, 1000);
+            }
+
     </script>
 </body>
 </html>
