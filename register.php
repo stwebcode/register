@@ -83,6 +83,7 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
+            $("#username").focus() //Kad ielādējas lapa tad var ievadīt username, nav jāspiež uz tā
             $('#register').click(registerUser)
         });
 
