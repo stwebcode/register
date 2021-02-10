@@ -12,7 +12,7 @@ if(isset($_SESSION['user_id']))
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body style="background-color: rgb(17, 17, 17);">
     <div class="register-box">
         <h1>Reģistrācija</h1>
         <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><br>
