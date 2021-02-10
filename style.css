@@ -1,5 +1,6 @@
 input {
   margin-bottom: 5px;
+  outline: none;
 }
 
 #username_msg, #password_msg, #verify_password_msg {
@@ -12,6 +13,9 @@ input {
 }
 
 #register {
+  display: inline-block;
+  border: 1px solid black;
+  padding: 0.5px 5px;
   cursor: pointer;
 }
 
