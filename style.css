@@ -1,5 +1,10 @@
+input {
+  margin-bottom: 5px;
+}
+
 #username_msg, #password_msg, #verify_password_msg {
   color: red;
+  margin-left: 5px;
 }
 
 #msg {
