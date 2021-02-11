@@ -11,21 +11,38 @@ if(isset($_SESSION['user_id']))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="croppie.js"></script>
+    <link rel="stylesheet" href="croppie.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body style="background-color: rgb(17, 17, 17);">
+    <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
+        <div id="myform">
+            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+            <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
+            <div id="buttons-container">
+                <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
+                <input id="doneButton" class="button" type="button" value="Gatavs" class="vanilla-result" disabled="">
+            </div>
+        </div>
+    </div>
+
     <div class="register-box">
         <h1>Reģistrācija</h1>
-        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off"><br>
-        <span id="username_msg"></span><br>
-        <input type="password" id="password" placeholder="Parole" autocomplete="off"><br>
-        <span id="password_msg"></span><br>
-        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off"><br>
-        <span id="verify_password_msg"></span><br><br>
-        <div id="register">Reģistrēties</div><br><br>
+        <div id="imageContainer">
+            <img id="croppieImg" src="placeholder.png">
+            <div id="addImg">+</div>
+        </div>
+        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
+        <span id="username_msg"></span>
+        <input type="password" id="password" placeholder="Parole" autocomplete="off">
+        <span id="password_msg"></span>
+        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
+        <span id="verify_password_msg"></span>
+        <div id="register">Reģistrēties</div>
         <div id="msg"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style.css">
     <script>
 
         // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
@@ -79,6 +96,12 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
+            $('#addImg').click(function(){
+                $('#croppieWindow').show();
+            });
+
+            $('#fileToUpload').on("input",function(){readFile(this);});
+            $("#doneButton").click(cropImage);
             $("#username").focus() //Kad ielādējas lapa tad var ievadīt username, nav jāspiež uz tā
             $('#register').click(registerUser)
         });
@@ -147,6 +170,50 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
+        var imageBlob;
+        var el = document.getElementById('vanilla-demo');
+        var vanilla = new Croppie(el, {
+            viewport: { width: 200, height: 200, type: 'circle'},
+            boundary: { width: 250, height: 250 },
+            showZoomer: false,
+        });
+
+        function cropImage(){
+            vanilla.result({
+                type: 'blob',
+                //size: { width: 100, height: 100 },
+                circle: false
+                }).then(function(blob) {
+                    imageBlob = blob;
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob); 
+                    reader.onloadend = function() {
+                        $("#croppieImg").attr("src",reader.result);
+                    }
+                    $('#croppieWindow').hide();
+            });
+        }
+
+        function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+					// $('.upload-demo').addClass('ready');
+	            	vanilla.bind({
+	            		url: e.target.result
+	            	}).then(function(){
+	            		console.log('jQuery bind complete');
+                        $("#doneButton").prop("disabled",false);
+                        $("#warn").css("visibility","hidden");
+	            	});
+	            }
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        console.log("Sorry - your browser doesn't support the FileReader API");
+		    }
+		}
             // Funkcija, kas pievieno un noņem klasi 'bounce' (error animāciju)
             function errorAnim(input) { // input vietā liek attiecīgo input field, piemēram, '#username'
                 $(input).addClass('bounce')
