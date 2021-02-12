@@ -1,10 +1,11 @@
 <?php
-require_once 'config.php';
+require_once 'database_manager.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Abstrakta klase, kas simulē Enum objektu priekš error tipiem, kas ir attiecināmi JS definētajiem error tipiem
 abstract Class ErrorType{
+
+    // Abstrakta klase, kas simulē Enum objektu priekš error tipiem, kas ir attiecināmi JS definētajiem error tipiem
 
     // Error tips lietotājvārdu kļūdām
     const USERNAME = "username_error";
@@ -73,37 +74,39 @@ function out($message, bool $is_error=false, string $type=ErrorType::NONE){
     die(json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 }
 
+// Ja action neeksistē, tad php izvada faila pilno lokāciju, tāpēc nosūtīsim lietotājam 404 error lapu.
+if (!isset($_POST['action'])){
+    http_response_code(404);
+    die();
+}
+
+// Iniciējam klase
+$db = new DatabaseManager();
+
+// Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
-    $errors = false;
   
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
     $hash = password_hash($password, PASSWORD_ARGON2I);
 
-    $output = [];
-
-    if(strlen($username) < 5){
-        out("Lietotājvārdam jābūt vismaz 5 simbolus garam", $is_error=true, $type=ErrorType::USERNAME);
+    // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
+    if(!($res = $db->check_username($username))[0]){
+        out($res[1] == 0 ? "Lietotājvārdam jābūt vismaz 5 simbolus garam" : "Lietotājvārds jau ir aizņemts", $is_error=true, $type=ErrorType::USERNAME);
     }
 
-    //Ja ievadīts lietotājvārds, kurš garāks par 4 simboliem, tad pārbauda vai tāds jau eksistē DB
-    $is_available = "SELECT * FROM users WHERE username = '$username'";
-    if($result = mysqli_query($con, $is_available)){
-        if(mysqli_num_rows($result) == 1){
-            out("Lietotājvārds jau ir aizņemts", $is_error=true, ErrorType::USERNAME);
-        }
-    }
-
-    if(strlen($password) < 5){
+    // Pārbaudam, vai parole ir derīga. Šeit mums nevajag saglabāt izvadi, jo kļūdas gadījumā tiks izvadīts tikai viens ziņojums.
+    if(!$db->check_password($password)[0]){
         out("Parolei jābūt vismaz 5 simbolus garai", $is_error=true, $type=ErrorType::PASSWORD);
     }
 
-    //Ja nav eroru, tad reģistrē
-    $insert_query = "INSERT INTO users (username, password, joined) VALUES ('$username', '$hash', NOW())";
-    $result = mysqli_query($con, $insert_query);
-    if($result){
+    // Ja viss kārtībā, reģistrējam lietotāju.
+    if($db->register($username, $password)){
         out("Lietotājs veiksmīgi reģistrēts");
     }
+
+    // Ja tomēr reģistrācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).
+    http_response_code(503);
 }
 ?>
