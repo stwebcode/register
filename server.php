@@ -92,12 +92,12 @@ if($_POST['action'] == "insert_user"){
     $hash = password_hash($password, PASSWORD_ARGON2I);
 
     // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
-    if(!($res = $db->check_username($username))[0]){
-        out($res[1] == 0 ? "Lietotājvārdam jābūt vismaz 5 simbolus garam" : "Lietotājvārds jau ir aizņemts", $is_error=true, $type=ErrorType::USERNAME);
+    if(!($res = $db->check_username($username))['success']){
+        out($res['error_id'] == 0 ? "Lietotājvārdam jābūt vismaz 5 simbolus garam" : "Lietotājvārds jau ir aizņemts", $is_error=true, $type=ErrorType::USERNAME);
     }
 
     // Pārbaudam, vai parole ir derīga. Šeit mums nevajag saglabāt izvadi, jo kļūdas gadījumā tiks izvadīts tikai viens ziņojums.
-    if(!$db->check_password($password)[0]){
+    if(!$db->check_password($password)['success']){
         out("Parolei jābūt vismaz 5 simbolus garai", $is_error=true, $type=ErrorType::PASSWORD);
     }
 

@@ -59,24 +59,37 @@ class DatabaseManager{
     // Publiska funkcija, kas pārbauda vai lietotājvārds sader ar formātu
     public function check_username(string $username){
         if (strlen($username) < 5){
-            return [false, 0];
+            return array(
+                "success" => false, 
+                "error_id" => 0
+            );
         }
 
         $user = $this->get_user($username);
 
         if ($user){
-            return [false, 1];
+            return array(
+                "success" => false, 
+                "error_id" => 1
+            );
         }
 
-        return [true];
+        return array(
+            "success" => true 
+        );
     }
 
     // Publiska funkcija, kas pārbauda vai prole sader ar formātu
     public function check_password(string $password){
         if (strlen($password) < 5){
-            return [false, 0];
+            return array(
+                "success" => false, 
+                "error_id" => 0
+            );
         }
-        return [true];
+        return array(
+            "success" => true
+        );
     }
 
     // Publiska funckijas, kas reģistrē lietotāju
