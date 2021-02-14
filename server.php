@@ -90,7 +90,7 @@ $db = new DatabaseManager();
 if($_POST['action'] == "insert_user"){
     $basename = "";
     // ja image masīvā atrodas vismaz 1 bilde, tad augšupielādējam to
-    if($_POST['image'][0] != null){
+    if(!empty($_POST['image'])){
         $time = time(); //laicīgi piefiksējam timestamp, lai visiem bildes izmēriem būtu vienāds basename
         foreach ($_POST['image'] as $data){
             switch ($data["size"]){
