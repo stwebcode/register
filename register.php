@@ -141,7 +141,7 @@ if(isset($_SESSION['user_id']))
                     action: "insert_user",
                     username: username,
                     password: password,
-                    image:[{image:image_30px,size:"30"},{image:image_200px,size:"200"}]
+                    image:images
 
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
@@ -171,7 +171,7 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
-        var image_200px = null, image_30px = null;
+        var images = [];
         var el = document.getElementById('vanilla-demo');
         var vanilla = new Croppie(el, {
             viewport: { width: 200, height: 200, type: 'circle'},
@@ -185,14 +185,14 @@ if(isset($_SESSION['user_id']))
                 size: { width: 30, height: 30 },
                 circle: false
                 }).then(function(base64) {
-                    image_30px = base64;
+                    images.push({image:base64,size:"30"});
             });
             vanilla.result({
                 type: 'base64',
                 size: { width: 200, height: 200 },
                 circle: false
                 }).then(function(base64) {
-                    image_200px = base64;
+                    images.push({image:base64,size:"200"});
                     $("#croppieImg").attr("src",base64);
                     $('#croppieWindow').hide();
             });
