@@ -19,7 +19,7 @@ if(isset($_SESSION['user_id']))
 <body style="background-color: rgb(17, 17, 17);">
     <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
         <div id="myform">
-            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;" accept="image/jpeg,image/png,image/webp">
             <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
             <div id="buttons-container">
                 <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
@@ -140,7 +140,8 @@ if(isset($_SESSION['user_id']))
             $.post("server.php", {
                     action: "insert_user",
                     username: username,
-                    password: password
+                    password: password,
+                    image:[{image:image_30px,size:"30"},{image:image_200px,size:"200"}]
 
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
@@ -170,7 +171,7 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
-        var imageBlob;
+        var image_200px = null, image_30px = null;
         var el = document.getElementById('vanilla-demo');
         var vanilla = new Croppie(el, {
             viewport: { width: 200, height: 200, type: 'circle'},
@@ -180,16 +181,19 @@ if(isset($_SESSION['user_id']))
 
         function cropImage(){
             vanilla.result({
-                type: 'blob',
-                //size: { width: 100, height: 100 },
+                type: 'base64',
+                size: { width: 30, height: 30 },
                 circle: false
-                }).then(function(blob) {
-                    imageBlob = blob;
-                    var reader = new FileReader();
-                    reader.readAsDataURL(blob); 
-                    reader.onloadend = function() {
-                        $("#croppieImg").attr("src",reader.result);
-                    }
+                }).then(function(base64) {
+                    image_30px = base64;
+            });
+            vanilla.result({
+                type: 'base64',
+                size: { width: 200, height: 200 },
+                circle: false
+                }).then(function(base64) {
+                    image_200px = base64;
+                    $("#croppieImg").attr("src",base64);
                     $('#croppieWindow').hide();
             });
         }
