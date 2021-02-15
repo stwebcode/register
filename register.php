@@ -189,7 +189,7 @@ if(isset($_SESSION['user_id']))
         var vanilla = new Croppie(el, {
             viewport: { width: 200, height: 200, type: 'circle'},
             boundary: { width: 250, height: 250 },
-            showZoomer: false,
+            showZoomer: true,
         });
 
         function cropImage(){
