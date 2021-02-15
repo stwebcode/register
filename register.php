@@ -19,7 +19,7 @@ if(isset($_SESSION['user_id']))
 <body style="background-color: rgb(17, 17, 17);">
     <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
         <div id="myform">
-            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;">
+            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;" accept="image/jpeg,image/png,image/webp">
             <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
             <div id="buttons-container">
                 <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
@@ -34,6 +34,7 @@ if(isset($_SESSION['user_id']))
             <img id="croppieImg" src="placeholder.png">
             <div id="addImg">+</div>
         </div>
+        <span id="image_msg"></span>
         <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
         <span id="username_msg"></span>
         <input type="password" id="password" placeholder="Parole" autocomplete="off">
@@ -57,12 +58,16 @@ if(isset($_SESSION['user_id']))
             // Error tips atkārtotas paroles kļūdām
             VER_PASSWORD: "password_verify",
 
+            // Error tips attēla pievienošanas kļūdām
+            IMAGE: "image",
+
             // Ziņojuma tips veiksmīgiem ziņojumiem
             SUCCESS: "success"
         }
 
         // Funckija, kas iztīra error laukus
         const errorClear = () => {
+            $('#image_msg').text('')
             $('#username_msg').text('')
             $('#password_msg').text('')
             $('#verify_password_msg').text('')
@@ -85,6 +90,10 @@ if(isset($_SESSION['user_id']))
                     $('#verify_password_msg').text(message)
                     break
                 
+                case ErrorType.IMAGE:
+                    $('#image_msg').text(message)
+                    break
+
                 case ErrorType.SUCCESS:
                     $('#msg').text(message)
                     break
@@ -140,7 +149,8 @@ if(isset($_SESSION['user_id']))
             $.post("server.php", {
                     action: "insert_user",
                     username: username,
-                    password: password
+                    password: password,
+                    image:images
 
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
@@ -161,6 +171,10 @@ if(isset($_SESSION['user_id']))
                             errorOut(ErrorType.PASSWORD, data.responseJSON.message)
                             break
                         
+                        case "image_error":
+                            errorOut(ErrorType.IMAGE, data.responseJSON.message)
+                            break
+
                         default:
                             // Ja nav definēts servera errors tad klientam izvadīsies atbildes dump konsolē (response dump)
                             console.log(data)
@@ -170,7 +184,7 @@ if(isset($_SESSION['user_id']))
                 })
             }
 
-        var imageBlob;
+        var images = [];
         var el = document.getElementById('vanilla-demo');
         var vanilla = new Croppie(el, {
             viewport: { width: 200, height: 200, type: 'circle'},
@@ -180,16 +194,19 @@ if(isset($_SESSION['user_id']))
 
         function cropImage(){
             vanilla.result({
-                type: 'blob',
-                //size: { width: 100, height: 100 },
+                type: 'base64',
+                size: { width: 30, height: 30 },
                 circle: false
-                }).then(function(blob) {
-                    imageBlob = blob;
-                    var reader = new FileReader();
-                    reader.readAsDataURL(blob); 
-                    reader.onloadend = function() {
-                        $("#croppieImg").attr("src",reader.result);
-                    }
+                }).then(function(base64) {
+                    images.push({image:base64,size:"30"});
+            });
+            vanilla.result({
+                type: 'base64',
+                size: { width: 200, height: 200 },
+                circle: false
+                }).then(function(base64) {
+                    images.push({image:base64,size:"200"});
+                    $("#croppieImg").attr("src",base64);
                     $('#croppieWindow').hide();
             });
         }
