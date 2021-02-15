@@ -34,6 +34,7 @@ if(isset($_SESSION['user_id']))
             <img id="croppieImg" src="placeholder.png">
             <div id="addImg">+</div>
         </div>
+        <span id="image_msg"></span>
         <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
         <span id="username_msg"></span>
         <input type="password" id="password" placeholder="Parole" autocomplete="off">
@@ -57,12 +58,16 @@ if(isset($_SESSION['user_id']))
             // Error tips atkārtotas paroles kļūdām
             VER_PASSWORD: "password_verify",
 
+            // Error tips attēla pievienošanas kļūdām
+            IMAGE: "image",
+
             // Ziņojuma tips veiksmīgiem ziņojumiem
             SUCCESS: "success"
         }
 
         // Funckija, kas iztīra error laukus
         const errorClear = () => {
+            $('#image_msg').text('')
             $('#username_msg').text('')
             $('#password_msg').text('')
             $('#verify_password_msg').text('')
@@ -85,6 +90,10 @@ if(isset($_SESSION['user_id']))
                     $('#verify_password_msg').text(message)
                     break
                 
+                case ErrorType.IMAGE:
+                    $('#image_msg').text(message)
+                    break
+
                 case ErrorType.SUCCESS:
                     $('#msg').text(message)
                     break
@@ -162,6 +171,10 @@ if(isset($_SESSION['user_id']))
                             errorOut(ErrorType.PASSWORD, data.responseJSON.message)
                             break
                         
+                        case "image_error":
+                            errorOut(ErrorType.IMAGE, data.responseJSON.message)
+                            break
+
                         default:
                             // Ja nav definēts servera errors tad klientam izvadīsies atbildes dump konsolē (response dump)
                             console.log(data)

@@ -37,7 +37,7 @@
   font-size: 1em;
 }
 
-#username_msg, #password_msg, #verify_password_msg {
+#username_msg, #password_msg, #verify_password_msg, #image_msg {
   color: var(--error);
   width: 300px;
   font-size: 0.9em;
