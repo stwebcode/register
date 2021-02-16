@@ -89,7 +89,6 @@ $db = new DatabaseManager();
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
-    $basename = "";
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
@@ -105,46 +104,59 @@ if($_POST['action'] == "insert_user"){
         out("Parolei jābūt vismaz 5 simbolus garai", $is_error=true, $type=ErrorType::PASSWORD);
     }
 
-    $supported_ext = array('jpg','jpeg','png','webp'); // atbalstītie failu extensions
-    // ja image masīvā atrodas vismaz 1 bilde, tad augšupielādējam to
-    if(!empty($_POST['image'])){
-        $time = time(); //laicīgi piefiksējam timestamp, lai visiem bildes izmēriem būtu vienāds basename
-        foreach ($_POST['image'] as $data){
-            switch ($data["size"]){
-                case "30":
-                    $folderPath = "images/30x30/";
-                    break;
-                case "200":
-                    $folderPath = "images/200x200/";
-                    break;
-                default:
-                    out("Neatbalstīts bildes izmērs!", $is_error=true, $type=ErrorType::IMAGE);
+    // Pārbauda vai lietotājs ir piekritis attēla augšupielādēšanai datubāzē
+    if($_POST['isAccepted'] == 'true') {
+        
+        $basename = "";
+        $supported_ext = array('jpg','jpeg','png','webp'); // atbalstītie failu extensions
+        // ja image masīvā atrodas vismaz 1 bilde, tad augšupielādējam to
+        if(!empty($_POST['image'])){
+            $time = time(); //laicīgi piefiksējam timestamp, lai visiem bildes izmēriem būtu vienāds basename
+            foreach ($_POST['image'] as $data){
+                switch ($data["size"]){
+                    case "30":
+                        $folderPath = "images/30x30/";
+                        break;
+                    case "200":
+                        $folderPath = "images/200x200/";
+                        break;
+                    default:
+                        out("Neatbalstīts bildes izmērs!", $is_error=true, $type=ErrorType::IMAGE);
+                }
+                $extension = explode('/', mime_content_type($data["image"]))[1]; // bildes extension. .png .jpg utt.
+                if(!in_array($extension,$supported_ext)){
+                    out("Neatbalstīts faila formāts!", $is_error=true, $type=ErrorType::IMAGE);
+                }
+                $image_parts = explode(";base64,", $data["image"]); //$image_parts[1] būs datu daļa
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]); //$image_parts[1] būs datu daļa
+                //base64_decode Decodes data encoded with MIME base64, tātad te kļūst par reālu bildi
+                $basename = $time . "." . $extension;
+                $file = $folderPath . $basename;
+                if (file_exists($file)) { // gadījumā, ja brīnumainā kārtā bilde ar šādu timestamp jau eksistē
+                    out("Šis attēls jau eksistē. Mēģiniet vēlreiz.", $is_error=true, $type=ErrorType::IMAGE);
+                }else{
+                    file_put_contents($file, $image_base64); //šī funkcija ievieto failu mapē uz servera
+                    //1. arguments ir faila nosaukums (tā ceļs, priekšā ir mape) un 2. ir faila saturs
+                }
             }
-            $extension = explode('/', mime_content_type($data["image"]))[1]; // bildes extension. .png .jpg utt.
-            if(!in_array($extension,$supported_ext)){
-                out("Neatbalstīts faila formāts!", $is_error=true, $type=ErrorType::IMAGE);
-            }
-            $image_parts = explode(";base64,", $data["image"]); //$image_parts[1] būs datu daļa
-            $image_type_aux = explode("image/", $image_parts[0]);
-            $image_type = $image_type_aux[1];
-            $image_base64 = base64_decode($image_parts[1]); //$image_parts[1] būs datu daļa
-            //base64_decode Decodes data encoded with MIME base64, tātad te kļūst par reālu bildi
-            $basename = $time . "." . $extension;
-            $file = $folderPath . $basename;
-            if (file_exists($file)) { // gadījumā, ja brīnumainā kārtā bilde ar šādu timestamp jau eksistē
-                out("Šis attēls jau eksistē. Mēģiniet vēlreiz.", $is_error=true, $type=ErrorType::IMAGE);
-            }else{
-                file_put_contents($file, $image_base64); //šī funkcija ievieto failu mapē uz servera
-                //1. arguments ir faila nosaukums (tā ceļs, priekšā ir mape) un 2. ir faila saturs
-            }
+        }else{
+            out("Nav pievienots attēls.", $is_error=true, $type=ErrorType::IMAGE);
         }
-    }else{
-        out("Nav pievienots attēls.", $is_error=true, $type=ErrorType::IMAGE);
-    }
 
-    // Ja viss kārtībā, reģistrējam lietotāju.
-    if($db->register($username, $password, $basename)){
-        out("Lietotājs veiksmīgi reģistrēts");
+        // Ja viss kārtībā, reģistrējam lietotāju.
+        if($db->register($username, $password, $basename)){
+            out("Lietotājs veiksmīgi reģistrēts");
+        }
+
+    } else if ($_POST['isAccepted'] == 'false') {
+
+        // Ja lietotājs nepiekrita privātuma politikai, tad, izmantojot funkciju registerWithoutPicture(), reģistrē bez attēla
+        if($db->registerWithoutPicture($username, $password)){
+            out("Lietotājs veiksmīgi reģistrēts bez attēla augšupielādes");
+        }
+
     }
 
     // Ja tomēr reģistrācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).

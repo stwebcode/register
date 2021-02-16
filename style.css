@@ -7,6 +7,7 @@
   --button-hover:rgb(141, 141, 141);
   --submit-button:#0275d8;
   --submit-button-hover:#44a8ff;
+  --popup-radius: 0.2rem;
 }
 *{
   box-sizing: border-box;
@@ -21,7 +22,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  padding: 25px 40px;
+  padding: 25px 45px;
   border-radius: 5px;
   background-color: white;
   user-select: none;
@@ -29,24 +30,20 @@
   justify-items: center;
   grid-gap:15px;
 }
-
 .register-box input {
   outline: none;
   width: 300px;
   padding: 5px;
   font-size: 1em;
 }
-
-#username_msg, #password_msg, #verify_password_msg, #image_msg {
+#username_msg, #password_msg, #verify_password_msg, #image_msg, #terms_msg {
   color: var(--error);
   width: 300px;
   font-size: 0.9em;
 }
-
 #msg {
   color: green;
 }
-
 #register {
   display: inline-block;
   background-color: var(--submit-button);
@@ -56,7 +53,16 @@
   cursor: pointer;
   padding: 10px;
 }
-
+.privacy-policy {
+  text-align: left;
+}
+.privacy-policy input {
+  width: 30px;
+}
+#privacy, #terms {
+  color: #44a8ff;
+  cursor: pointer;
+}
 .bounce {
   outline: 0;
   border:1px solid var(--error);
@@ -64,7 +70,6 @@
   animation-duration: .5s;
   animation-delay: 0.25s;
 }
-
 @keyframes bounce {
     0% {
       transform: translateX(0px);
@@ -195,4 +200,56 @@
   padding: 10px;
   z-index: 3;
   cursor: pointer;
+}
+
+/* POPUP FOR PRIVACY POLICY */
+
+.popup {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: 250ms opacity ease-in;
+}
+.popup-container {
+  background-color: white;
+  width: 40rem;
+  padding: 1.5rem;
+  border-radius: var(--popup-radius);
+}
+.popup-container > h1 {
+  text-align: center;
+}
+.popup-container p {
+  line-height: 1.5rem;
+  border-top: 1px solid lightgray;
+  padding: 1rem 0;
+}
+.popup-buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.popup-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.btn-close {
+  font-family: inherit;
+  padding: 0.4rem 0.8rem;
+  outline: none;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1px solid var(--submit-button);
+  border-radius: var(--popup-radius);
+  background-color: var(--submit-button);
+  color: white;
 }

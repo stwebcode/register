@@ -113,6 +113,27 @@ class DatabaseManager{
         return true;
     }
 
+    // Publiska funkcija, kas reģistrē lietotāju bez attēla, ja nav lietotājs nav piekritis privātuma politikai
+    public function registerWithoutPicture(string $username, string $password){
+
+        if(!$this->check_username($username)){
+            return false;
+        }
+
+        $sql = "INSERT INTO users(username, password) VALUES (?, ?);";
+        $stmt = $this->CONN->prepare($sql);
+
+        $hash = password_hash($password, PASSWORD_ARGON2I);
+
+        $results = $stmt->execute(array($username, $hash));
+
+        if(!$results){
+            return false;
+        }
+
+        return true;
+    }
+
     // Publiska funckijas, kas pārbauda lietotāja autentifikācijas datus un saderības gadījumā atgriež lietotāja datus
     public function login(string $username, string $password){
         $user = $this->get_user($username);
