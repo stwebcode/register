@@ -93,6 +93,7 @@ if(isset($_SESSION['user_id']))
             $('#password_msg').text('')
             $('#verify_password_msg').text('')
             $('#privacy_terms_msg').text('')
+            $('#msg').text('')
         }
 
         // Funkcija, kas parāda <message> vietā <type> (ErrorType)
