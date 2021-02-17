@@ -105,7 +105,7 @@ if($_POST['action'] == "insert_user"){
     }
 
     // Pārbauda vai lietotājs ir piekritis attēla augšupielādēšanai datubāzē
-    if($_POST['isAccepted'] == 'true') {
+    if($_POST['defaultPicture'] == 'false') {
         
         $basename = "";
         $supported_ext = array('jpg','jpeg','png','webp'); // atbalstītie failu extensions
@@ -142,7 +142,7 @@ if($_POST['action'] == "insert_user"){
                 }
             }
         }else{
-            out("Nav pievienots attēls.", $is_error=true, $type=ErrorType::IMAGE);
+            out("Pievienojat attēlu vai izvēlieties lietot anonīmu.", $is_error=true, $type=ErrorType::IMAGE);
         }
 
         // Ja viss kārtībā, reģistrējam lietotāju.
@@ -150,11 +150,11 @@ if($_POST['action'] == "insert_user"){
             out("Lietotājs veiksmīgi reģistrēts");
         }
 
-    } else if ($_POST['isAccepted'] == 'false') {
+    } else if ($_POST['defaultPicture'] == 'true') {
 
         // Ja lietotājs nepiekrita privātuma politikai, tad, izmantojot funkciju registerWithoutPicture(), reģistrē bez attēla
-        if($db->registerWithoutPicture($username, $password)){
-            out("Lietotājs veiksmīgi reģistrēts bez attēla augšupielādes");
+        if($db->register($username, $password, $basename = "")){
+            out("Lietotājs veiksmīgi reģistrēts");
         }
 
     }

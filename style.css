@@ -22,13 +22,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  padding: 25px 45px;
+  padding: 30px 45px;
   border-radius: 5px;
   background-color: white;
   user-select: none;
   display: grid;
   justify-items: center;
-  grid-gap:15px;
+  gap: 15px;
 }
 .register-box input {
   outline: none;
@@ -36,7 +36,7 @@
   padding: 5px;
   font-size: 1em;
 }
-#username_msg, #password_msg, #verify_password_msg, #image_msg, #terms_msg {
+#username_msg, #password_msg, #verify_password_msg, #image_msg, #privacy_terms_msg {
   color: var(--error);
   width: 300px;
   font-size: 0.9em;

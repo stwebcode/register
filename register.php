@@ -41,10 +41,11 @@ if(isset($_SESSION['user_id']))
         <span id="password_msg"></span>
         <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
         <span id="verify_password_msg"></span>
+        <span id="privacy_terms_msg"></span>
         <div class="privacy-policy">
         <input type="checkbox" id="acceptPrivacy">Piekrītu <span id="privacy">privātuma politikai</span><br><br>
         <input type="checkbox" id="acceptTerms" required>Piekrītu <span id="terms">noteikumiem</span><br><br>
-        <span id="terms_msg"></span>
+        <input type="checkbox" id="defaultPicture" required><span id="defaultPicture">Vēlos lietot anonīmu profila attēlu</span><br><br>
         </div>
         <div id="register">Reģistrēties</div>
         <div id="msg"></div>
@@ -53,8 +54,7 @@ if(isset($_SESSION['user_id']))
     <div class="popup" id="popup">
         <div class="popup-container">
             <h1>Noteikumi un privātuma politika</h1>
-            <p>Piemērs: Atzīmējot "Piekrītu", Jūs piekrītat, ka Jūsu bilde tiks augšuplādēta mūsu datubāzē un būs redzama visiem mājaslapas lietotājiem.<br>
-            Ja neatzīmējat "Piekrītu", tad Jūsu bilde netiks augšuplādēta mūsu datubāzē, tās vietā Jums būs anonīms profila attēls</p>
+            <p>Privātuma politika: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique dolor quis ipsum deserunt libero dignissimos corrupti rem labore tempore. Odit soluta nesciunt, facere a nihil optio numquam in quam dolore?</p>
             <p>Noteikumi: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore nam consequuntur praesentium at facilis, molestiae, reprehenderit quam doloribus quo quisquam a autem alias necessitatibus corporis ducimus tempora. Hic, mollitia? Earum?</p>
             <div class="popup-buttons">
                 <button class="btn-close" id="btn-close">Aizvērt</button>
@@ -79,6 +79,9 @@ if(isset($_SESSION['user_id']))
             // Error tips attēla pievienošanas kļūdām
             IMAGE: "image",
 
+            // Error tips privātuma politikas un noteikumu nepiekrišanas vai neizlasīšanas kļūdām
+            CHECKBOX: "privacy_terms",
+
             // Ziņojuma tips veiksmīgiem ziņojumiem
             SUCCESS: "success"
         }
@@ -89,7 +92,7 @@ if(isset($_SESSION['user_id']))
             $('#username_msg').text('')
             $('#password_msg').text('')
             $('#verify_password_msg').text('')
-            $('#terms_msg').text('')
+            $('#privacy_terms_msg').text('')
         }
 
         // Funkcija, kas parāda <message> vietā <type> (ErrorType)
@@ -113,8 +116,8 @@ if(isset($_SESSION['user_id']))
                     $('#image_msg').text(message)
                     break
 
-                case ErrorType.TERMS:
-                    $('#terms_msg').text(message)
+                case ErrorType.CHECKBOX:
+                    $('#privacy_terms_msg').text(message)
                     break
 
                 case ErrorType.SUCCESS:
@@ -144,6 +147,7 @@ if(isset($_SESSION['user_id']))
             var password = $('#password').val()
             var verify_password = $('#verify_password').val()
             var termsCheckbox = document.getElementById('acceptTerms')
+            var privacyCheckbox = document.getElementById('acceptPrivacy')
 
             // iztīram ziņojumus
             errorClear();
@@ -169,12 +173,21 @@ if(isset($_SESSION['user_id']))
                 return
             }
 
-            if(termsCheckbox.checked == false) {
-                errorOut(ErrorType.TERMS, "Lai turpinātu, piekrītiet noteikumiem")
-                return
+            if(privacyCheckbox.checked == false || termsCheckbox.checked == false) {
+                if(isRead == false) {
+                    errorOut(ErrorType.CHECKBOX, "Izlasiet privātuma politiku un noteikumus")
+                    return
+                } else if (privacyCheckbox.checked == false) {
+                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet privātuma politikai")
+                    return
+                } else if (termsCheckbox.checked == false) {
+                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet noteikumiem")
+                    return
+                }  
             }
 
-            checkIfAccepted()
+            // Pārbauda vai ir atzīmēts checkbox, par savas bildes neizmantošanu
+            checkIfDefaultPicture()
 
             // Ja neviens no erroriem netika triggerots, sūtam pieprasījumu serverim
             $.post("server.php", {
@@ -182,7 +195,7 @@ if(isset($_SESSION['user_id']))
                     username: username,
                     password: password,
                     image: images,
-                    isAccepted: isAccepted
+                    defaultPicture: defaultPicture
 
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
@@ -279,18 +292,21 @@ if(isset($_SESSION['user_id']))
         const btnDecline = document.getElementById('btn-decline')
         const privacyPolicy = document.getElementById('privacy')
         const terms = document.getElementById('terms')
-        var isAccepted = false
+        var privacyCheckbox = document.getElementById('acceptPrivacy')
+        var termsCheckbox = document.getElementById('acceptTerms')
+        var defaultPictureCheckbox = document.getElementById('defaultPicture')
+        var defaultPicture = false
+        var isRead = false
+
+        privacyCheckbox.disabled = true
+        termsCheckbox.disabled = true
         
-        // Pārbauda vai ir atzīmēts privātuma politikas checkbox
-        function checkIfAccepted() {
-            var checkBox = document.getElementById('acceptPrivacy')
-            if(checkBox.checked == false) {
-                console.log('false')
-                isAccepted = false
-                images = []
+        // Pārbauda vai ir atzīmēts checkbox par anonīmas profila bildes lietošanu
+        function checkIfDefaultPicture() {
+            if(defaultPictureCheckbox.checked == true) {
+                defaultPicture = true
             } else {
-                console.log('true')
-                isAccepted = true
+                defaultPicture = false
             }
         }
 
@@ -304,13 +320,17 @@ if(isset($_SESSION['user_id']))
         // Pievieno eventListener(click), kas palaiž funkciju showPopup()
         function setPopup(element) {
             element.addEventListener("click", ()=>{
+                isRead = true
                 showPopup()
             })
         }
 
-        //  Kad uzspiež pogu 'Aizvērt', tad aizver uznirstošo logu
+        //  Kad uzspiež pogu 'Aizvērt', tad aizver uznirstošo logu un atbloķē checkboxus
         btnClose.addEventListener("click", ()=>{
             popup.classList.remove('popup-visible')
+            $('#privacy_terms_msg').text('')
+            privacyCheckbox.disabled = false
+            termsCheckbox.disabled = false
         })
 
         setPopup(privacyPolicy)
