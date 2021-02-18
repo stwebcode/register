@@ -17,38 +17,86 @@ if(isset($_SESSION['user_id']))
     <link rel="stylesheet" href="style.css" />
 </head>
 <body style="background-color: rgb(17, 17, 17);">
-    <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
-        <div id="myform">
-            <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;" accept="image/jpeg,image/png,image/webp">
-            <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
-            <div id="buttons-container">
-                <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
-                <input id="doneButton" class="button" type="button" value="Gatavs" class="vanilla-result" disabled="">
+
+    <div class="register-form">
+
+        <div class="basic-data register-box tab">
+            <h1>Reģistrācija</h1>
+            <input type="text" id="firstname" placeholder="Vārds" autocomplete="off">
+            <span id="firstname_msg"></span>
+            <input type="text" id="lastname" placeholder="Uzvārds" autocomplete="off">
+            <span id="lastname_msg"></span>
+            <span id="course_msg"></span>
+            <select id="courses">
+                <option value="" disabled selected>Kurss</option>
+                <?php
+                    try {
+                        $conn = new PDO("mysql:host=$DB_HOST;dbname=$DB_DATABASE", $DB_USER, $DB_PASS);
+                        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                      } catch(PDOException $e) {
+                        echo "Connection failed: " . $e->getMessage();
+                      }
+
+                      $sql = "SELECT * FROM courses";
+                      $stmt = $conn->prepare($sql);
+
+                      $stmt->execute();
+
+                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $id = $row['id'];
+                        $course = $row['course'];
+                        echo "<option value='$id'>$course</option>";
+                    }
+
+                    $conn = null; // Noslēdz savienojumu
+                ?>
+            </select>
+
+            <span id="privacy_terms_msg"></span>
+            <div class="privacy-policy">
+                <input type="checkbox" id="acceptPrivacy">Piekrītu <span id="privacy">privātuma politikai</span><br><br>
+                <input type="checkbox" id="acceptTerms" required>Piekrītu <span id="terms">noteikumiem</span><br><br>
+                <input type="checkbox" id="defaultPicture" required><span id="defaultPicture">Vēlos lietot anonīmu profila attēlu</span><br><br>
+            </div>
+            <div class="next">Nākamais</div>
+        </div>
+
+        <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
+            <div id="myform">
+                <input type="file" name="fileToUpload" id="fileToUpload" style="display:none;" accept="image/jpeg,image/png,image/webp">
+                <div id="vanilla-demo"><label for="fileToUpload" id="warn" class="center-content">Lūdzu, pievienojiet attēlu.</label></div>
+                <div id="buttons-container">
+                    <label for="fileToUpload" class="button">Izvēlēties Attēlu</label>
+                    <input id="doneButton" class="button" type="button" value="Gatavs" class="vanilla-result" disabled="">
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="register-box">
-        <h1>Reģistrācija</h1>
-        <div id="imageContainer">
-            <img id="croppieImg" src="placeholder.png">
-            <div id="addImg">+</div>
+        <div class="image-data register-box tab">
+            <h1>Attēla pievienošana</h1>
+            <div id="imageContainer">
+                <img id="croppieImg" src="placeholder.png">
+                <div id="addImg">+</div>
+            </div>
+            <span id="image_msg"></span>
+            <div class="next">Nākamais</div>
+            <div class="previous">Atpakaļ</div>
         </div>
-        <span id="image_msg"></span>
-        <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
-        <span id="username_msg"></span>
-        <input type="password" id="password" placeholder="Parole" autocomplete="off">
-        <span id="password_msg"></span>
-        <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
-        <span id="verify_password_msg"></span>
-        <span id="privacy_terms_msg"></span>
-        <div class="privacy-policy">
-        <input type="checkbox" id="acceptPrivacy">Piekrītu <span id="privacy">privātuma politikai</span><br><br>
-        <input type="checkbox" id="acceptTerms" required>Piekrītu <span id="terms">noteikumiem</span><br><br>
-        <input type="checkbox" id="defaultPicture" required><span id="defaultPicture">Vēlos lietot anonīmu profila attēlu</span><br><br>
+
+        <div class="register-box login-data tab">
+            <h1>Reģistrācija</h1>
+            <input type="text" id="username" placeholder="Lietotājvārds" autocomplete="off">
+            <span id="username_msg"></span>
+            <input type="password" id="password" placeholder="Parole" autocomplete="off">
+            <span id="password_msg"></span>
+            <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
+            <span id="verify_password_msg"></span>
+            <div id="register">Reģistrēties</div>
+            <!-- <div class="previous">Atpakaļ</div> -->
+            <!-- Vēl jāievieš, ka no pēdējās lapas var aiziet uz pirmo, ja tiek izlaista bildes ievade -->
+            <div id="msg"></div>
         </div>
-        <div id="register">Reģistrēties</div>
-        <div id="msg"></div>
+
     </div>
 
     <div class="popup" id="popup">
@@ -66,6 +114,15 @@ if(isset($_SESSION['user_id']))
 
         // Šeit tiek definēti Error tipi t.i. vietas, kur parādās errori
         const ErrorType = {
+
+            // Error tips vārda kļūdām
+            FIRSTNAME: "firstname",
+
+            // Error tips uzvārda kļūdām
+            LASTNAME: "lastname",
+
+            // Error tips kursa kļūdām
+            COURSE: "course",
 
             // Error tips lietotājvārdu kļūdām
             USERNAME: "username",
@@ -88,6 +145,9 @@ if(isset($_SESSION['user_id']))
 
         // Funckija, kas iztīra error laukus
         const errorClear = () => {
+            $('#firstname_msg').text('')
+            $('#lastname_msg').text('')
+            $('#course_msg').text('')
             $('#image_msg').text('')
             $('#username_msg').text('')
             $('#password_msg').text('')
@@ -101,6 +161,19 @@ if(isset($_SESSION['user_id']))
 
             // Skatoties pēc tipa, izvadam ziņojumu/kļūdu
             switch(type){
+
+                case ErrorType.FIRSTNAME:
+                    $('#firstname_msg').text(message)
+                    break
+
+                case ErrorType.LASTNAME:
+                    $('#lastname_msg').text(message)
+                    break
+
+                case ErrorType.COURSE:
+                    $('#course_msg').text(message)
+                    break
+
                 case ErrorType.USERNAME:
                     $('#username_msg').text(message)
                     break
@@ -138,12 +211,15 @@ if(isset($_SESSION['user_id']))
 
             $('#fileToUpload').on("input",function(){readFile(this);});
             $("#doneButton").click(cropImage);
-            $("#username").focus() //Kad ielādējas lapa tad var ievadīt username, nav jāspiež uz tā
+            $("#firstname").focus()
             $('#register').click(registerUser)
         });
 
         // Funkcija, kas reģistrē lietotāju
         function registerUser(){
+            var firstname = $('#firstname').val()
+            var lastname = $('#lastname').val()
+            var courseID = $('#courses').val()
             var username = $('#username').val()
             var password = $('#password').val()
             var verify_password = $('#verify_password').val()
@@ -174,25 +250,12 @@ if(isset($_SESSION['user_id']))
                 return
             }
 
-            if(privacyCheckbox.checked == false || termsCheckbox.checked == false) {
-                if(isRead == false) {
-                    errorOut(ErrorType.CHECKBOX, "Izlasiet privātuma politiku un noteikumus")
-                    return
-                } else if (privacyCheckbox.checked == false) {
-                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet privātuma politikai")
-                    return
-                } else if (termsCheckbox.checked == false) {
-                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet noteikumiem")
-                    return
-                }  
-            }
-
-            // Pārbauda vai ir atzīmēts checkbox, par savas bildes neizmantošanu
-            checkIfDefaultPicture()
-
             // Ja neviens no erroriem netika triggerots, sūtam pieprasījumu serverim
             $.post("server.php", {
                     action: "insert_user",
+                    firstname: firstname,
+                    lastname: lastname,
+                    courseID: courseID,
                     username: username,
                     password: password,
                     image: images,
@@ -218,6 +281,7 @@ if(isset($_SESSION['user_id']))
                             break
                         
                         case "image_error":
+                            nextPrevious(-1)
                             errorOut(ErrorType.IMAGE, data.responseJSON.message)
                             break
 
@@ -336,6 +400,90 @@ if(isset($_SESSION['user_id']))
 
         setPopup(privacyPolicy)
         setPopup(terms)
+
+        // Reģistrēšanās pa soļiem
+
+        var tabs = document.querySelectorAll(".tab")
+        var currentTab = 0
+        showTab(currentTab)
+
+        nextButton = document.querySelectorAll(".next")
+        previousButton = document.querySelectorAll(".previous")
+        
+        for(var i = 0; i < nextButton.length; i++) {
+            nextButton[i].onclick = function() {
+                nextPrevious(1)
+            }
+        }
+
+        for(var i = 0; i < previousButton.length; i++) {
+            previousButton[i].onclick = function() {
+                nextPrevious(-1)
+            }
+        }
+
+        function showTab(n) {
+            tabs[n].style.display = "grid"
+        }
+
+        function nextPrevious(n) {
+            if(!validateForm()) {
+                return;
+            }
+            console.log('click')
+            tabs[currentTab].style.display = "none"
+            currentTab = currentTab + n
+            showTab(currentTab)
+        }
+
+        function validateForm() {
+            var firstname = $('#firstname').val()
+            var lastname = $('#lastname').val()
+            var courses = $('#courses').val()
+
+            errorClear();
+
+            if(firstname < 3) {
+                errorOut(ErrorType.FIRSTNAME, "Ievadiet savu vārdu")
+                errorAnim('#firstname')
+                return
+            }
+
+            if(lastname < 3) {
+                errorOut(ErrorType.LASTNAME, "Ievadiet savu uzvārdu")
+                errorAnim('#lastname')
+                return
+            }
+
+            if(courses < 1) {
+                errorOut(ErrorType.COURSE, "Izvēlieties kursu")
+                errorAnim('#courses')
+                return
+            }
+
+            if(privacyCheckbox.checked == false || termsCheckbox.checked == false) {
+                if(isRead == false) {
+                    errorOut(ErrorType.CHECKBOX, "Izlasiet privātuma politiku un noteikumus")
+                    return
+                } else if (privacyCheckbox.checked == false) {
+                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet privātuma politikai")
+                    return
+                } else if (termsCheckbox.checked == false) {
+                    errorOut(ErrorType.CHECKBOX, "Lai turpinātu, piekrītiet noteikumiem")
+                    return
+                }  
+            }
+
+            if(defaultPictureCheckbox.checked == true) {
+                tabs[currentTab].style.display = "none"
+                currentTab++;// Skipo bildes ievades soli, ja atzīmēts, ka nevēlas to izmantot
+            }
+
+            // Pārbauda vai ir atzīmēts checkbox, par savas bildes neizmantošanu
+            checkIfDefaultPicture()
+
+            return true;
+        }
 
     </script>
 </body>

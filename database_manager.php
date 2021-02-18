@@ -93,18 +93,18 @@ class DatabaseManager{
     }
 
     // Publiska funckijas, kas reģistrē lietotāju
-    public function register(string $username, string $password, string $basename){
+    public function register(string $firstname, string $lastname, $courseID,string $username, string $password, string $basename){
 
         if(!$this->check_username($username)){
             return false;
         }
 
-        $sql = "INSERT INTO users(username, password, image) VALUES (?, ?, ?);";
+        $sql = "INSERT INTO users(firstname, lastname, courseID, username, password, image) VALUES (?, ?, ?, ?, ?, ?);";
         $stmt = $this->CONN->prepare($sql);
 
         $hash = password_hash($password, PASSWORD_ARGON2I);
 
-        $results = $stmt->execute(array($username, $hash, $basename));
+        $results = $stmt->execute(array($firstname, $lastname, $courseID, $username, $hash, $basename));
 
         if(!$results){
             return false;
