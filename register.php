@@ -26,7 +26,6 @@ if(isset($_SESSION['user_id']))
             <span id="firstname_msg"></span>
             <input type="text" id="lastname" placeholder="Uzvārds" autocomplete="off">
             <span id="lastname_msg"></span>
-            <span id="course_msg"></span>
             <select id="courses">
                 <option value="" disabled selected>Kurss</option>
                 <?php
@@ -51,14 +50,14 @@ if(isset($_SESSION['user_id']))
                     $conn = null; // Noslēdz savienojumu
                 ?>
             </select>
-
+            <span id="course_msg"></span>
             <span id="privacy_terms_msg"></span>
             <div class="privacy-policy">
                 <input type="checkbox" id="acceptPrivacy">Piekrītu <span id="privacy">privātuma politikai</span><br><br>
                 <input type="checkbox" id="acceptTerms" required>Piekrītu <span id="terms">noteikumiem</span><br><br>
-                <input type="checkbox" id="defaultPicture" required><span id="defaultPicture">Vēlos lietot anonīmu profila attēlu</span><br><br>
+                <input type="checkbox" id="defaultPicture" required><span id="defaultPicture">Izlaist profila attēla ievietošanu</span><br><br>
             </div>
-            <div class="next">Nākamais</div>
+            <div class="next skipImage">Nākamais</div>
         </div>
 
         <div id="croppieWindow" class="shadowbox center-content" style="display:none;">
@@ -92,7 +91,7 @@ if(isset($_SESSION['user_id']))
             <input type="password" id="verify_password" placeholder="Apstipriniet paroli" autocomplete="off">
             <span id="verify_password_msg"></span>
             <div id="register">Reģistrēties</div>
-            <!-- <div class="previous">Atpakaļ</div> -->
+            <div class="previous" id="registerPrevious">Atpakaļ</div>
             <!-- Vēl jāievieš, ka no pēdējās lapas var aiziet uz pirmo, ja tiek izlaista bildes ievade -->
             <div id="msg"></div>
         </div>
@@ -474,12 +473,21 @@ if(isset($_SESSION['user_id']))
                 }  
             }
 
+            // Tad ja ieķeksēts checkbox par attēla ievades izlaišanu
             if(defaultPictureCheckbox.checked == true) {
-                tabs[currentTab].style.display = "none"
-                currentTab++;// Skipo bildes ievades soli, ja atzīmēts, ka nevēlas to izmantot
+                currentTab++;// Izlaiž bildes ievades soli, ja atzīmēts, ka nevēlas to izmantot
+                document.getElementById('registerPrevious').onclick = function() {
+                    tabs[currentTab].style.display = "none"
+                    showTab(0) // Aizmet uz pirmo soli, ja nospiež 'Atpakaļ', ja bija izvēlēts izlaist attēla ievades soli
+                    currentTab = 0
+                }
+            } else {
+                document.getElementById('registerPrevious').onclick = function() {
+                    nextPrevious(-1)
+                }
             }
 
-            // Pārbauda vai ir atzīmēts checkbox, par savas bildes neizmantošanu
+            // Pārbauda vai ir atzīmēts checkbox, par savas bildes neizmantošanu (defaultPicture sūta uz serveri)
             checkIfDefaultPicture()
 
             return true;
