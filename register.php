@@ -27,28 +27,7 @@ if(isset($_SESSION['user_id']))
             <input type="text" id="lastname" placeholder="Uzvārds" autocomplete="off">
             <span id="lastname_msg"></span>
             <select id="courses">
-                <option value="" disabled selected>Kurss</option>
-                <?php
-                    try {
-                        $conn = new PDO("mysql:host=$DB_HOST;dbname=$DB_DATABASE", $DB_USER, $DB_PASS);
-                        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                      } catch(PDOException $e) {
-                        echo "Connection failed: " . $e->getMessage();
-                      }
-
-                      $sql = "SELECT * FROM courses";
-                      $stmt = $conn->prepare($sql);
-
-                      $stmt->execute();
-
-                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $id = $row['id'];
-                        $course = $row['course'];
-                        echo "<option value='$id'>$course</option>";
-                    }
-
-                    $conn = null; // Noslēdz savienojumu
-                ?>
+                <option value='' disabled selected>Kurss</option>
             </select>
             <span id="course_msg"></span>
             <span id="privacy_terms_msg"></span>
@@ -92,7 +71,6 @@ if(isset($_SESSION['user_id']))
             <span id="verify_password_msg"></span>
             <div id="register">Reģistrēties</div>
             <div class="previous" id="registerPrevious">Atpakaļ</div>
-            <!-- Vēl jāievieš, ka no pēdējās lapas var aiziet uz pirmo, ja tiek izlaista bildes ievade -->
             <div id="msg"></div>
         </div>
 
@@ -204,6 +182,7 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
+            fetchCourses();
             $('#addImg').click(function(){
                 $('#croppieWindow').show();
             });
@@ -491,6 +470,20 @@ if(isset($_SESSION['user_id']))
             checkIfDefaultPicture()
 
             return true;
+        }
+
+        // Ielāde kursus no datubāzes, server.php faila
+        function fetchCourses() {
+            $.post("server.php",{
+                action: 'fetch_courses'
+            }, function(data) {
+                for(var i = 0; i < data.length; i++){
+                    var id = data[i]["id"]
+                    var course = data[i]["course"]
+
+                    $('#courses').append("<option value='"+id+"'>"+course+"</option>");
+                }
+            }, "json")
         }
 
     </script>

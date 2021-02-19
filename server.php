@@ -86,6 +86,26 @@ if (!isset($_POST['action'])){
 // Iniciējam klase
 $db = new DatabaseManager();
 
+// Selecto kursus no datubāzes un ieliek tos masīvā
+if($_POST['action'] == "fetch_courses"){
+
+    $sql = "SELECT * FROM courses";
+    $stmt = $db->CONN->prepare($sql);
+
+    $stmt->execute();
+
+    $courses_arr = array();
+
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $id = $row['id'];
+        $course = $row['course'];
+        $courses_arr[] = array("id"=>$id, "course"=>$course);
+    }
+
+    echo json_encode($courses_arr);
+
+}
+
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
@@ -163,4 +183,5 @@ if($_POST['action'] == "insert_user"){
     // Ja tomēr reģistrācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).
     http_response_code(503);
 }
+
 ?>
