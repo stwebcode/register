@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 18, 2021 at 11:57 AM
+-- Generation Time: Feb 19, 2021 at 12:04 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -72,6 +72,25 @@ INSERT INTO `courses` (`id`, `course`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL,
+  `role` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`id`, `role`) VALUES
+(1, 'skolēns'),
+(2, 'skolotājs');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -79,7 +98,9 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,
-  `courseID` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `roleID` int(1) NOT NULL,
+  `courseID` int(2) NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `joined` datetime NOT NULL DEFAULT current_timestamp(),
@@ -90,12 +111,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `firstname`, `lastname`, `courseID`, `username`, `password`, `joined`, `image`) VALUES
-(1, '', '', 0, 'user1', 'abcd', '2021-01-19 14:18:48', ''),
-(10, '', '', 0, 'user2', '123456', '2021-02-07 10:33:15', ''),
-(11, '', '', 0, 'user3', '123456', '2021-02-07 10:40:32', ''),
-(24, '', '', 0, 'user4', '$argon2i$v=19$m=65536,t=4,p=1$bUhiODlzbDM3bXRpVW9TMw$HO6l7CpnTzAe7tguBygTOEU9Zmf3zGHzGRFh71O0XpU', '2021-02-16 17:59:15', '1613491155.png'),
-(39, 'Name', 'Lastname', 31, 'user5', '$argon2i$v=19$m=65536,t=4,p=1$Z05iSWo1Sndab25CeGY3SQ$UmZdXrwS5Dc9VAqHCAOhP/DtDNmwiA7Ojy1br9IAmX8', '2021-02-18 12:56:40', '');
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseID`, `username`, `password`, `joined`, `image`) VALUES
+(41, 'First', 'Last', '', 0, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$b1lOYU0wUmh2bHdHeFlMOQ$m9OVSL7ns0lhVNnZhetxSfzBP+btU3wIzAmo1Mz39CE', '2021-02-19 13:03:56', '');
 
 --
 -- Indexes for dumped tables
@@ -105,6 +122,12 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `courseID`, `username`, `pas
 -- Indexes for table `courses`
 --
 ALTER TABLE `courses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -124,10 +147,16 @@ ALTER TABLE `courses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
