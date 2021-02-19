@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2021 at 12:04 PM
+-- Generation Time: Feb 19, 2021 at 02:52 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.0
 
@@ -99,7 +99,7 @@ CREATE TABLE `users` (
   `firstname` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
-  `roleID` int(1) NOT NULL,
+  `roleID` int(1) NOT NULL DEFAULT 1,
   `courseID` int(2) NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseID`, `username`, `password`, `joined`, `image`) VALUES
-(41, 'First', 'Last', '', 0, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$b1lOYU0wUmh2bHdHeFlMOQ$m9OVSL7ns0lhVNnZhetxSfzBP+btU3wIzAmo1Mz39CE', '2021-02-19 13:03:56', '');
+(42, 'First', 'Last', '', 1, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$VHlGLktyQkJ3NnplRkJ2MA$jToWc0BAkn//wSyFFLhOkVnJTQBcqrvIyFKRCpYAIqg', '2021-02-19 15:51:38', '');
 
 --
 -- Indexes for dumped tables
@@ -156,7 +156,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
