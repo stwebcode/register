@@ -40,6 +40,24 @@ class DatabaseManager{
         return $dbh;
     }
 
+    // Publiska funkcija, kas iegūst visus kursus no tabulas 'courses' un ieliek tos masīvā
+    public function get_courses(){
+        $sql = "SELECT * FROM courses";
+        $stmt = $this->CONN->prepare($sql);
+
+        $stmt->execute();
+
+        $courses_arr = array();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $id = $row['id'];
+            $course = $row['course'];
+            $courses_arr[] = array("id"=>$id, "course"=>$course);
+        }
+
+        echo json_encode($courses_arr);
+    }
+
     // Publiska funkcija, kas iegūst lietotāju (ja tāds eksistē) pēc lietotājvārda
     public function get_user(string $username){
         $sql = "SELECT * FROM users WHERE username=?;";

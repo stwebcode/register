@@ -87,23 +87,8 @@ if (!isset($_POST['action'])){
 $db = new DatabaseManager();
 
 // Selecto kursus no datubāzes un ieliek tos masīvā
-if($_POST['action'] == "fetch_courses"){
-
-    $sql = "SELECT * FROM courses";
-    $stmt = $db->CONN->prepare($sql);
-
-    $stmt->execute();
-
-    $courses_arr = array();
-
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $id = $row['id'];
-        $course = $row['course'];
-        $courses_arr[] = array("id"=>$id, "course"=>$course);
-    }
-
-    echo json_encode($courses_arr);
-
+if($_POST['action'] == "get_courses"){
+    $db->get_courses();
 }
 
 // Ja klients vēlas pievienot lietotāju

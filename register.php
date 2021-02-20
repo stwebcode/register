@@ -475,7 +475,7 @@ if(isset($_SESSION['user_id']))
         // Ielāde kursus no datubāzes, server.php faila
         function fetchCourses() {
             $.post("server.php",{
-                action: 'fetch_courses'
+                action: 'get_courses'
             }, function(data) {
                 for(var i = 0; i < data.length; i++){
                     var id = data[i]["id"]
