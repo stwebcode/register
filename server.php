@@ -88,7 +88,9 @@ $db = new DatabaseManager();
 
 // Selecto kursus no datubāzes un ieliek tos masīvā
 if($_POST['action'] == "get_courses"){
-    $db->get_courses();
+    // $courses = $db->get_courses();
+    // echo json_encode($courses);
+    echo json_encode($db->get_courses()); // Kā ir labāk darīt? Tā, kā 91. un 92. rinda? Vai tā, kā šajā rindā? Vai tam nav nozīmes, jo šādi sanāk īsāk?
 }
 
 // Ja klients vēlas pievienot lietotāju

@@ -55,7 +55,7 @@ class DatabaseManager{
             $courses_arr[] = array("id"=>$id, "course"=>$course);
         }
 
-        echo json_encode($courses_arr);
+        return $courses_arr;
     }
 
     // Publiska funkcija, kas iegūst lietotāju (ja tāds eksistē) pēc lietotājvārda
