@@ -182,7 +182,7 @@ if(isset($_SESSION['user_id']))
 
         // Sākuma funkcija - tiek palaista lapas ielādes beigās.
         $( document ).ready(function() {
-            fetchCourses();
+            getCourses();
             $('#addImg').click(function(){
                 $('#croppieWindow').show();
             });
@@ -473,7 +473,7 @@ if(isset($_SESSION['user_id']))
         }
 
         // Ielāde kursus no datubāzes, server.php faila
-        function fetchCourses() {
+        function getCourses() {
             $.post("server.php",{
                 action: 'get_courses'
             }, function(data) {
