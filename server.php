@@ -161,7 +161,7 @@ if($_POST['action'] == "insert_user"){
         }
 
     } else if ($_POST['defaultPicture'] == 'true') {
-        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename = "")){
+        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename = "default.png")){
             out("Lietotājs veiksmīgi reģistrēts");
         }
     }
