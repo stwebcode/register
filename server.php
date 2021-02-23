@@ -86,9 +86,19 @@ if (!isset($_POST['action'])){
 // Iniciējam klase
 $db = new DatabaseManager();
 
+// Selecto kursus no datubāzes un ieliek tos masīvā
+if($_POST['action'] == "get_courses"){
+    // $courses = $db->get_courses();
+    // echo json_encode($courses);
+    echo json_encode($db->get_courses()); // Kā ir labāk darīt? Tā, kā 91. un 92. rinda? Vai tā, kā šajā rindā? Vai tam nav nozīmes, jo šādi sanāk īsāk?
+}
+
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $courseID = $_POST['courseID'];
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
@@ -141,25 +151,24 @@ if($_POST['action'] == "insert_user"){
                     //1. arguments ir faila nosaukums (tā ceļs, priekšā ir mape) un 2. ir faila saturs
                 }
             }
-        }else{
-            out("Pievienojat attēlu vai izvēlieties lietot anonīmu.", $is_error=true, $type=ErrorType::IMAGE);
+        } else {
+            out("Pievienojiet attēlu vai izvēlieties lietot anonīmu iepriekšējā solī", $is_error=true, $type=ErrorType::IMAGE);
         }
 
         // Ja viss kārtībā, reģistrējam lietotāju.
-        if($db->register($username, $password, $basename)){
+        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename)){
             out("Lietotājs veiksmīgi reģistrēts");
         }
 
     } else if ($_POST['defaultPicture'] == 'true') {
-
-        // Ja lietotājs nepiekrita privātuma politikai, tad, izmantojot funkciju registerWithoutPicture(), reģistrē bez attēla
-        if($db->register($username, $password, $basename = "")){
+        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename = "default.png")){
             out("Lietotājs veiksmīgi reģistrēts");
         }
-
     }
+
 
     // Ja tomēr reģistrācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).
     http_response_code(503);
 }
+
 ?>

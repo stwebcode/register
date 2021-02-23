@@ -40,6 +40,24 @@ class DatabaseManager{
         return $dbh;
     }
 
+    // Publiska funkcija, kas iegūst visus kursus no tabulas 'courses' un ieliek tos masīvā
+    public function get_courses(){
+        $sql = "SELECT * FROM courses";
+        $stmt = $this->CONN->prepare($sql);
+
+        $stmt->execute();
+
+        $courses_arr = array();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $id = $row['id'];
+            $course = $row['course'];
+            $courses_arr[] = array("id"=>$id, "course"=>$course);
+        }
+
+        return $courses_arr;
+    }
+
     // Publiska funkcija, kas iegūst lietotāju (ja tāds eksistē) pēc lietotājvārda
     public function get_user(string $username){
         $sql = "SELECT * FROM users WHERE username=?;";
@@ -93,18 +111,18 @@ class DatabaseManager{
     }
 
     // Publiska funckijas, kas reģistrē lietotāju
-    public function register(string $username, string $password, string $basename){
+    public function register(string $firstname, string $lastname, $courseID,string $username, string $password, string $basename){
 
         if(!$this->check_username($username)){
             return false;
         }
 
-        $sql = "INSERT INTO users(username, password, image) VALUES (?, ?, ?);";
+        $sql = "INSERT INTO users(firstname, lastname, courseID, username, password, image) VALUES (?, ?, ?, ?, ?, ?);";
         $stmt = $this->CONN->prepare($sql);
 
         $hash = password_hash($password, PASSWORD_ARGON2I);
 
-        $results = $stmt->execute(array($username, $hash, $basename));
+        $results = $stmt->execute(array($firstname, $lastname, $courseID, $username, $hash, $basename));
 
         if(!$results){
             return false;

@@ -28,15 +28,21 @@
   user-select: none;
   display: grid;
   justify-items: center;
-  gap: 15px;
+  gap: 22px;
 }
-.register-box input {
+.register-box input, select {
   outline: none;
   width: 300px;
   padding: 5px;
   font-size: 1em;
 }
-#username_msg, #password_msg, #verify_password_msg, #image_msg, #privacy_terms_msg {
+.register-box select {
+  width: 50%;
+}
+.login-data input {
+  margin-top: 5px;
+}
+#username_msg, #password_msg, #verify_password_msg, #image_msg, #privacy_terms_msg, #firstname_msg, #lastname_msg, #course_msg {
   color: var(--error);
   width: 300px;
   font-size: 0.9em;
@@ -53,6 +59,24 @@
   cursor: pointer;
   padding: 10px;
 }
+.next {
+  display: inline-block;
+  background-color: var(--submit-button);
+  color: var(--light-text);
+  border-radius: 5px;
+  padding: 0.5px 5px;
+  cursor: pointer;
+  padding: 10px;
+}
+.previous {
+  display: inline-block;
+  background-color: var(--button);
+  color: var(--light-text);
+  border-radius: 5px;
+  padding: 0.5px 5px;
+  cursor: pointer;
+  padding: 10px;
+}
 .privacy-policy {
   text-align: left;
 }
@@ -62,6 +86,9 @@
 #privacy, #terms {
   color: #44a8ff;
   cursor: pointer;
+}
+.tab {
+  display: none;
 }
 .bounce {
   outline: 0;
