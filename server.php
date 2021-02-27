@@ -171,4 +171,37 @@ if($_POST['action'] == "insert_user"){
     http_response_code(503);
 }
 
+// Autorizēšanās
+if($_POST['action'] == "login_user"){
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
+    $password = $_POST['password'];
+
+
+    // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
+    // if(!($res = $db->check_username($username))['success']){
+    //     out($res['error_id'] == 0 ? "Lietotājvārdam jābūt vismaz 5 simbolus garam" : "Lietotājvārds ievadīts pareizi", $is_error=true, $type=ErrorType::USERNAME);
+    // }
+
+    // Pārbaudam, vai parole ir derīga. Šeit mums nevajag saglabāt izvadi, jo kļūdas gadījumā tiks izvadīts tikai viens ziņojums.
+    if(!$db->check_password($password)['success']){
+        out("Parolei jābūt vismaz 5 simbolus garai", $is_error=true, $type=ErrorType::PASSWORD);
+    }
+    
+    $login = $db->login($username, $password);
+    if($login){
+        $_SESSION['user_id'] = $login['id'];
+        $_SESSION['username'] = $login['username'];
+        $_SESSION['firstname'] = $login['firstname'];
+        $_SESSION['lastname'] = $login['lastname'];
+        $_SESSION['image'] = $login['image'];
+        out('Veiksmīga pieslēgšanās');
+    }
+    
+    
+
+    out("Nepareizs lietotājvārds vai parole!", $is_error=true, $type=ErrorType::PASSWORD);
+    // Ja tomēr autorizācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).
+    http_response_code(503);
+}
+
 ?>

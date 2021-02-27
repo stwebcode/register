@@ -270,7 +270,7 @@ if(isset($_SESSION['user_id']))
                     }
                     return;
                 })
-            }
+        }//END registerUser()
 
         var images = [];
         var el = document.getElementById('vanilla-demo');

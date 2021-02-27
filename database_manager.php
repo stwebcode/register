@@ -138,7 +138,7 @@ class DatabaseManager{
             return false;
         }
 
-        $real_hash = $user['password'];
+        $real_hash = $user['password'];//Hashotā parole no DB, jo get_user atgriež visus datus par lietotāju
         if(!password_verify($password, $real_hash)){
             return false;
         }
