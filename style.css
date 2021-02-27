@@ -42,7 +42,7 @@
 .login-data input {
   margin-top: 5px;
 }
-#username_msg, #password_msg, #verify_password_msg, #image_msg, #privacy_terms_msg, #firstname_msg, #lastname_msg, #course_msg {
+#username_msg, #password_msg, #verify_password_msg, #image_msg, #privacy_terms_msg, #firstname_msg, #lastname_msg, #course_msg, #status_msg {
   color: var(--error);
   width: 300px;
   font-size: 0.9em;

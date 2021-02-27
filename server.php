@@ -13,6 +13,9 @@ abstract Class ErrorType{
     // Error tips paroļu kļūdām
     const PASSWORD = "password_error";
 
+    // Error tips status kļūdām
+    const STATUS = "status_error";
+
     // Error tips attēlu kļūdām
     const IMAGE = "image_error";
     
@@ -101,6 +104,7 @@ if($_POST['action'] == "insert_user"){
     $courseID = $_POST['courseID'];
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
+    $status = 'active';
 
     $hash = password_hash($password, PASSWORD_ARGON2I);
 
@@ -156,12 +160,12 @@ if($_POST['action'] == "insert_user"){
         }
 
         // Ja viss kārtībā, reģistrējam lietotāju.
-        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename)){
+        if($db->register($firstname, $lastname, $status, $courseID, $username, $password, $basename)){
             out("Lietotājs veiksmīgi reģistrēts");
         }
 
     } else if ($_POST['defaultPicture'] == 'true') {
-        if($db->register($firstname, $lastname, $courseID, $username, $password, $basename = "default.png")){
+        if($db->register($firstname, $lastname, $status, $courseID, $username, $password, $basename = "default.png")){
             out("Lietotājs veiksmīgi reģistrēts");
         }
     }
@@ -176,7 +180,6 @@ if($_POST['action'] == "login_user"){
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
     $password = $_POST['password'];
 
-
     // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
     // if(!($res = $db->check_username($username))['success']){
     //     out($res['error_id'] == 0 ? "Lietotājvārdam jābūt vismaz 5 simbolus garam" : "Lietotājvārds ievadīts pareizi", $is_error=true, $type=ErrorType::USERNAME);
@@ -188,6 +191,11 @@ if($_POST['action'] == "login_user"){
     }
     
     $login = $db->login($username, $password);
+
+    if($login['status'] == 'banned') {
+        out("Jūsu profils ir nobloķēts par noteikumu pārkāpšanu!", $is_error=true, $type=ErrorType::STATUS);
+    }
+
     if($login){
         $_SESSION['user_id'] = $login['id'];
         $_SESSION['username'] = $login['username'];
@@ -196,8 +204,6 @@ if($_POST['action'] == "login_user"){
         $_SESSION['image'] = $login['image'];
         out('Veiksmīga pieslēgšanās');
     }
-    
-    
 
     out("Nepareizs lietotājvārds vai parole!", $is_error=true, $type=ErrorType::PASSWORD);
     // Ja tomēr autorizācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).

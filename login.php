@@ -27,6 +27,7 @@ if(isset($_SESSION['user_id']))
             <input type="password" id="password" placeholder="Parole" autocomplete="off">
             <span id="password_msg"></span>
             <div id="login">Pieslēgties</div>
+            <div id="status_msg"></div>
             <div id="msg"></div>
         </div> 
     </div>
@@ -42,6 +43,9 @@ if(isset($_SESSION['user_id']))
         // Error tips paroļu kļūdām
         PASSWORD: "password",
 
+        // Error tips status kļūdām
+        STATUS: "status",
+
         // Ziņojuma tips veiksmīgiem ziņojumiem
         SUCCESS: "success"
     }
@@ -50,6 +54,7 @@ if(isset($_SESSION['user_id']))
     const errorClear = () => {
         $('#username_msg').text('')
         $('#password_msg').text('')
+        $('#status_msg').text('')
     }
     // Funkcija, kas parāda <message> vietā <type> (ErrorType)
     const errorOut = (type, message) => {
@@ -63,6 +68,10 @@ if(isset($_SESSION['user_id']))
         
         case ErrorType.PASSWORD:
             $('#password_msg').text(message)
+            break
+
+        case ErrorType.STATUS:
+            $('#status_msg').text(message)
             break
 
         case ErrorType.SUCCESS:
@@ -133,6 +142,9 @@ if(isset($_SESSION['user_id']))
                         errorOut(ErrorType.PASSWORD, data.responseJSON.message)
                         break
                     
+                    case "status_error":
+                        errorOut(ErrorType.STATUS, data.responseJSON.message)
+                        break
 
                     default:
                         // Ja nav definēts servera errors tad klientam izvadīsies atbildes dump konsolē (response dump)
