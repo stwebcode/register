@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Crimson Pro', serif;
+}
+body{
+    min-height: 120vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+input,select,button{
+    padding: 5px;
+}
+button{
+    border: none;
+    background: #dddddd;
+    min-width: 40px;
+    cursor: pointer;
+}
+button:hover{
+    background: #ebebeb;
+}
+a{
+    text-decoration: none;
+    color: rgb(0, 66, 141);
+}
+a:visited{
+    color: rgb(0, 66, 141);
+}
+a:hover{
+    color: rgb(0, 83, 179);
+}
+/* HEADER */
+#header{
+    position: sticky;
+    top: 0;
+}
+#header nav{
+    height: 90px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    background: #fafafa;
+    transition: height 100ms ease;
+}
+#logo-container{
+    height: inherit;
+}
+#logo{
+    height: 100%;
+}
+#header ul{
+    display: grid;
+    grid-template-columns: repeat(5,minmax(90px,120px));
+    grid-gap: 5px;
+}
+#header li{
+    list-style-type: none;
+    display: grid;
+    align-items: center;
+}
+#header li a{
+    padding:20px 10px;
+    text-align: center;
+    transition: all 200ms ease-in-out;
+}
+#header li a:hover{
+    background: #ebebeb;
+}
+#header-user{
+    display: flex;
+    align-items: center;
+}
+#header-user  *~*{ /* *~* nozīmē jebkas, pirms kura ir "sibling." Rezultātā tiek atlasīti visi elementi, izlaižot pirmo */
+    margin-left: 10px;
+}
+/* FOOTER */
+footer{
+    text-align: center;
+    background: #222327;
+    display: grid;
+    align-items: center;
+    color: white;
+}

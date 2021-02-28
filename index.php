@@ -1,12 +1,9 @@
 <?php
 require_once 'config.php';
-if(isset($_SESSION['user_id'])){
-    echo "
-        <div>{$_SESSION['firstname']} {$_SESSION['lastname']}</div>
-        <img src='images/200x200/{$_SESSION['image']}' alt=''>
-        <a href='logout.php'>Izlogoties</a>
-    ";
-} else {
-    header('Location: login.php');
-}
-?>
+if(!isset($_SESSION['user_id'])):
+    header('Location: login.php'); 
+else: ?>
+<?php include_once "header.php"; ?>
+
+<?php include_once "footer.php"; ?>
+<?php endif; ?>
