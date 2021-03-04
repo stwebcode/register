@@ -145,6 +145,27 @@ class DatabaseManager{
 
         return $user;
     }
+
+    public function get_events(){
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events ORDER BY time";
+        
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["everyYear"] = ($row["everyYear"] == 1) ? true : false;
+            $out[] = $row;
+        }
+
+        return $out;
+    }
+    
+    public function insert_event($eventData){
+        $sql = "INSERT INTO `events`(`name`, `date`, `type`, `everyYear`, `color`, `time`, `description`) VALUES (?,?,?,?,?,?,?)";
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute(array($eventData["name"],$eventData["date"],$eventData["type"],$eventData["everyYear"],$eventData["color"],$eventData["time"],$eventData["description"]));
+
+    }
 }
 
 ?>

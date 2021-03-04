@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="calendar/evo-calendar.min.css" />
+    <link rel="stylesheet" href="calendar/evo-calendar.midnight-blue.min.css" />
+    <link rel="stylesheet" href="calendar/evo-calendar.orange-coral.min.css" />
+    <link rel="stylesheet" href="calendar/evo-calendar.royal-navy.min.css" />
     <link rel="stylesheet" href="index.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>TODO: title</title>

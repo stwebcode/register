@@ -13,13 +13,13 @@ body{
 input,select,button{
     padding: 5px;
 }
-button{
+#header button{
     border: none;
     background: #dddddd;
     min-width: 40px;
     cursor: pointer;
 }
-button:hover{
+#header button:hover{
     background: #ebebeb;
 }
 a{
@@ -36,6 +36,7 @@ a:hover{
 #header{
     position: sticky;
     top: 0;
+    z-index: 99;
 }
 #header nav{
     height: 90px;

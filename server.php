@@ -96,6 +96,17 @@ if($_POST['action'] == "get_courses"){
     echo json_encode($db->get_courses()); // Kā ir labāk darīt? Tā, kā 91. un 92. rinda? Vai tā, kā šajā rindā? Vai tam nav nozīmes, jo šādi sanāk īsāk?
 }
 
+if($_POST['action'] == "get_events"){
+    echo json_encode($db->get_events());
+}
+
+if($_POST['action'] == "insert_event"){
+    //TODO: datu validācija
+    $eventData = $_POST['eventData'];
+    // var_dump($eventData);
+
+    echo json_encode($db->insert_event($eventData));
+}
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
