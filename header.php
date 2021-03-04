@@ -35,8 +35,8 @@
         <?php
         echo "
         <div id=\"header-user\">
-            <div>{$_SESSION['firstname']} {$_SESSION['lastname']}</div>
-            <img src='images/30x30/{$_SESSION['image']}' alt=''>
+            <div>{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}</div>
+            <img src='images/30x30/{$_SESSION['user']['image']}' alt=''>
             <a href='logout.php'>Izlogoties</a>
         </div>";
         ?>

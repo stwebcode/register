@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-if(!isset($_SESSION['user_id'])):
+if(!isset($_SESSION['user']['id'])):
     header('Location: login.php'); 
 else: ?>
 <?php include_once "header.php"; ?>

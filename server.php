@@ -208,11 +208,12 @@ if($_POST['action'] == "login_user"){
     }
 
     if($login){
-        $_SESSION['user_id'] = $login['id'];
-        $_SESSION['username'] = $login['username'];
-        $_SESSION['firstname'] = $login['firstname'];
-        $_SESSION['lastname'] = $login['lastname'];
-        $_SESSION['image'] = $login['image'];
+        $_SESSION['user'] = $login;
+        // $_SESSION['user_id'] = $login['id'];
+        // $_SESSION['username'] = $login['username'];
+        // $_SESSION['firstname'] = $login['firstname'];
+        // $_SESSION['lastname'] = $login['lastname'];
+        // $_SESSION['image'] = $login['image'];
         out('Veiksmīga pieslēgšanās');
     }
 
