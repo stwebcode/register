@@ -104,6 +104,11 @@ if($_POST['action'] == "get_events"){
 }
 
 if($_POST['action'] == "insert_event"){
+
+    if(!isset($_SESSION['user']) || $_SESSION['user']['roleID'] != 2){
+        out("Neautorizēts lietotājs.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+
     $name = htmlspecialchars($_POST['eventData']['name'], ENT_QUOTES, 'UTF-8');
     $date = htmlspecialchars($_POST['eventData']['date'], ENT_QUOTES, 'UTF-8');
     $type = htmlspecialchars($_POST['eventData']['type'], ENT_QUOTES, 'UTF-8');
