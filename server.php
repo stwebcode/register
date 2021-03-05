@@ -18,6 +18,9 @@ abstract Class ErrorType{
 
     // Error tips attēlu kļūdām
     const IMAGE = "image_error";
+
+    // Error tips kalendāra kļūdām
+    const CALENDAR = "calendar_error";
     
     // Error tips nenoteiktām kļūdām
     const NONE = "none";
@@ -101,8 +104,42 @@ if($_POST['action'] == "get_events"){
 }
 
 if($_POST['action'] == "insert_event"){
-    //TODO: datu validācija
-    $eventData = $_POST['eventData'];
+    $name = htmlspecialchars($_POST['eventData']['name'], ENT_QUOTES, 'UTF-8');
+    $date = htmlspecialchars($_POST['eventData']['date'], ENT_QUOTES, 'UTF-8');
+    $type = htmlspecialchars($_POST['eventData']['type'], ENT_QUOTES, 'UTF-8');
+    $everyYear = htmlspecialchars($_POST['eventData']['everyYear'], ENT_QUOTES, 'UTF-8');
+    $time = htmlspecialchars($_POST['eventData']['time'], ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars($_POST['eventData']['description'], ENT_QUOTES, 'UTF-8');
+    $color = htmlspecialchars($_POST['eventData']['color'], ENT_QUOTES, 'UTF-8');
+
+    if(strlen($name) == 0){
+        out("Nav ievadīts nosaukums.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($date == ""){
+        out("Nav ievadīts datums.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($time == ""){
+        out("Nav ievadīts laiks.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($color == ""){
+        out("Nav ievadīta krāsa.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if(substr($color, 0, 1) != "#" || strlen($color) != 7){
+        out("Nepareizs krāsas formāts. '$color'", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($type == ""){
+        out("Nav ievadīts tips.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+
+    $eventData = [
+        'name' => $name,
+        'date' => $date,
+        'type' => $type,
+        'everyYear' => $everyYear,
+        'time' => $time,
+        'description' => $description,
+        'color' => $color
+    ];
     // var_dump($eventData);
 
     echo json_encode($db->insert_event($eventData));
@@ -209,6 +246,7 @@ if($_POST['action'] == "login_user"){
 
     if($login){
         $_SESSION['user'] = $login;
+        unset($_SESSION['user']['password']); // dzēš password no user session mainīgā. Man šķiet, ka tā būtu drošāk. -F 
         // $_SESSION['user_id'] = $login['id'];
         // $_SESSION['username'] = $login['username'];
         // $_SESSION['firstname'] = $login['firstname'];
