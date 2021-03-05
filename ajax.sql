@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2021 at 02:52 PM
+-- Generation Time: Mar 05, 2021 at 02:49 PM
 -- Server version: 10.4.17-MariaDB
--- PHP Version: 8.0.0
+-- PHP Version: 8.0.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -72,6 +72,30 @@ INSERT INTO `courses` (`id`, `course`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `events`
+--
+
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `everyYear` tinyint(1) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `time` time NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `events`
+--
+
+INSERT INTO `events` (`id`, `name`, `date`, `type`, `everyYear`, `color`, `time`, `description`) VALUES
+(2, 'Sieviešu diena2', '2021-03-08', 'holiday2', 1, '#ff0000', '11:14:01', 'Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `roles`
 --
 
@@ -112,7 +136,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseID`, `username`, `password`, `joined`, `image`) VALUES
-(42, 'First', 'Last', '', 1, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$VHlGLktyQkJ3NnplRkJ2MA$jToWc0BAkn//wSyFFLhOkVnJTQBcqrvIyFKRCpYAIqg', '2021-02-19 15:51:38', '');
+(42, 'First', 'Last', '', 1, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$VHlGLktyQkJ3NnplRkJ2MA$jToWc0BAkn//wSyFFLhOkVnJTQBcqrvIyFKRCpYAIqg', '2021-02-19 15:51:38', ''),
+(43, 'Filips', 'Šaberts', 'active', 2, 24, 'Filipssh', '$argon2i$v=19$m=65536,t=4,p=1$TDJxdWk0b1hGdlRTOG9Pag$Et9zhB1f+X/JXLhnAuI6TF4sv8m2p/p8zC6srT0qptA', '2021-02-27 21:15:46', 'default.png');
 
 --
 -- Indexes for dumped tables
@@ -125,6 +150,12 @@ ALTER TABLE `courses`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -134,7 +165,9 @@ ALTER TABLE `roles`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `roleID` (`roleID`),
+  ADD KEY `courseID` (`courseID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -147,6 +180,12 @@ ALTER TABLE `courses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
+-- AUTO_INCREMENT for table `events`
+--
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+
+--
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
@@ -156,7 +195,18 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`roleID`) REFERENCES `roles` (`id`),
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`courseID`) REFERENCES `courses` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
