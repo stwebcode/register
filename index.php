@@ -51,8 +51,13 @@ else: ?>
         $("#submit-new-event").click(function(){
             if(validateEventForm()){
                 submitNewEvent();
-                $("#new-event").hide();
             }
+        });
+        $(document.body).on("click",".shadowbox", function(){
+            $(".shadowbox").hide();
+        });
+        $(document.body).on("click",".shadowbox > *", function(event){
+            event.stopPropagation();
         });
     });
     
@@ -140,6 +145,7 @@ else: ?>
             success: function(data){
                 // console.log(data);
                 insertCalendarEvent(data);
+                $("#new-event").hide();
             },
             error: function(data){
                 console.log(data);

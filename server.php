@@ -152,11 +152,11 @@ if($_POST['action'] == "insert_event"){
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $courseID = $_POST['courseID'];
+    $firstname = htmlspecialchars($_POST['firstname'], ENT_QUOTES, 'UTF-8');
+    $lastname = htmlspecialchars($_POST['lastname'], ENT_QUOTES, 'UTF-8');
+    $courseID = htmlspecialchars($_POST['courseID'], ENT_QUOTES, 'UTF-8');
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
-    $password = $_POST['password'];
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
     $status = 'active';
 
     $hash = password_hash($password, PASSWORD_ARGON2I);
@@ -231,7 +231,7 @@ if($_POST['action'] == "insert_user"){
 // Autorizēšanās
 if($_POST['action'] == "login_user"){
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
-    $password = $_POST['password'];
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
 
     // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
     // if(!($res = $db->check_username($username))['success']){
