@@ -685,7 +685,10 @@
         markup += '></div></div><div class="event-info"><p class="event-title">'+_.limitTitle(event_data.name) + " " + event_data.time;
         if (event_data.badge) markup += '<span>'+event_data.badge+'</span>';
         markup += '</p>'
-        let description = event_data.description.substring(0, 100);
+        var description = event_data.description;
+        if(description.length > 100){
+            description = `${description.substring(0, 97)}...`;
+        }
         if (event_data.description) markup += '<p class="event-desc">'+description+'</p>';
         markup += '</div>';
         markup += '</div>';

@@ -115,7 +115,6 @@ if($_POST['action'] == "insert_event"){
     $everyYear = htmlspecialchars($_POST['eventData']['everyYear'], ENT_QUOTES, 'UTF-8');
     $time = htmlspecialchars($_POST['eventData']['time'], ENT_QUOTES, 'UTF-8');
     $description = htmlspecialchars($_POST['eventData']['description'], ENT_QUOTES, 'UTF-8');
-    $color = htmlspecialchars($_POST['eventData']['color'], ENT_QUOTES, 'UTF-8');
 
     if(strlen($name) == 0){
         out("Nav ievadīts nosaukums.", $is_error=true, $type=ErrorType::CALENDAR);
@@ -125,12 +124,6 @@ if($_POST['action'] == "insert_event"){
     }
     if($time == ""){
         out("Nav ievadīts laiks.", $is_error=true, $type=ErrorType::CALENDAR);
-    }
-    if($color == ""){
-        out("Nav ievadīta krāsa.", $is_error=true, $type=ErrorType::CALENDAR);
-    }
-    if(substr($color, 0, 1) != "#" || strlen($color) != 7){
-        out("Nepareizs krāsas formāts. '$color'", $is_error=true, $type=ErrorType::CALENDAR);
     }
     if($type == ""){
         out("Nav ievadīts tips.", $is_error=true, $type=ErrorType::CALENDAR);
@@ -142,8 +135,7 @@ if($_POST['action'] == "insert_event"){
         'type' => $type,
         'everyYear' => $everyYear,
         'time' => $time,
-        'description' => $description,
-        'color' => $color
+        'description' => $description
     ];
     // var_dump($eventData);
 

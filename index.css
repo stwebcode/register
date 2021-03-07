@@ -128,3 +128,10 @@ footer{
     background: rgba(255,255,255,0.2);
     cursor: pointer;
 }
+.event-desc{
+    word-break: break-all;
+}
+#close-event-form{
+    width: 30px;
+    float: right;
+}

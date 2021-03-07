@@ -147,7 +147,7 @@ class DatabaseManager{
     }
 
     public function get_events(){
-        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events ORDER BY time";
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out ORDER BY time";
         
         $stmt = $this->CONN->prepare($sql);
         $stmt->execute();
@@ -161,11 +161,11 @@ class DatabaseManager{
     }
     
     public function insert_event($eventData){
-        $sql = "INSERT INTO `events`(`name`, `date`, `type`, `everyYear`, `color`, `time`, `description`) VALUES (?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `events`(`name`, `date`, `type`, `everyYear`, `time`, `description`) VALUES (?,?,?,?,?,?)";
         $stmt = $this->CONN->prepare($sql);
-        $stmt->execute(array($eventData["name"],$eventData["date"],$eventData["type"],$eventData["everyYear"],$eventData["color"],$eventData["time"],$eventData["description"]));
+        $stmt->execute(array($eventData["name"],$eventData["date"],$eventData["type"],$eventData["everyYear"],$eventData["time"],$eventData["description"]));
 
-        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events WHERE `id` = (SELECT MAX(`id`) FROM events)";
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out WHERE `id` = (SELECT MAX(`id`) FROM events_out)";
         $stmt = $this->CONN->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

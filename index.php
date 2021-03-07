@@ -9,6 +9,18 @@ else: ?>
     <button id="show-event-form">+ Jauns ieraksts</button>
     <div id="new-event" class="shadowbox">
         <div class="two-column-form">
+            <br><span><button id="close-event-form">X</button></span>
+            <label for="type">Tips</label>
+            <div>
+                <input id="type" list="types" type="text" name="type" autocomplete="off" required>
+                <datalist id="types">
+                    <option>Svētki</option>
+                    <option>Atceres diena</option>
+                    <option>Ekskursija</option>
+                    <option>Eksāmens</option>
+                </datalist>
+                <p id="type-error"></p>
+            </div>
             <label for="name">Nosaukums</label>
             <div>
                 <input id="name" type="text" name="name" required>
@@ -26,17 +38,8 @@ else: ?>
             </div>
             <br>
             <label for="everyYear">Ikgadējs <input id="everyYear" type="checkbox" name="everyYear"></label>
-            <label for="color">Krāsa</label>
-            <div>
-                <input id="color" type="text" name="color" required>
-                <p id="color-error"></p>
-            </div>
-            <label for="type">tips</label>
-            <div>
-                <input id="type" type="text" name="type" required>
-                <p id="type-error"></p>
-            </div>
-            <label for="description">apraksts</label>
+            
+            <label for="description">Apraksts</label>
             <textarea id="description" name="description" rows="8" cols="30"></textarea>
             <button id="submit-new-event">iesniegt</button>
         </div>
@@ -48,6 +51,7 @@ else: ?>
         $("#new-event").hide();
         getEvents();
         $("#show-event-form").click(function(){$("#new-event").show()});
+        $("#close-event-form").click(function(){$("#new-event").hide()});
         $("#submit-new-event").click(function(){
             if(validateEventForm()){
                 submitNewEvent();
@@ -90,13 +94,15 @@ else: ?>
         $("#date-error").text("");
         $("#type-error").text("");
         $("#time-error").text("");
-        $("#color-error").text("");
         const name = $("#name").val();
         const date = $("#date").val();
         const type = $("#type").val();
         const time = $("#time").val();
         // const description = $("#description").val();
-        const color = $("#color").val();
+        if(type == ""){
+            $("#type-error").text("Šis lauks ir obligāts.");
+            return false;
+        }
         if(name.length == 0){
             $("#name-error").text("Šis lauks ir obligāts.");
             return false;
@@ -109,18 +115,6 @@ else: ?>
             $("#time-error").text("Šis lauks ir obligāts.");
             return false;
         }
-        if(color == ""){
-            $("#color-error").text("Šis lauks ir obligāts.");
-            return false;
-        }
-        if(color[0] != "#" || color.length != 7){
-            $("#color-error").text("Krāsas formātam jābūt: #RRGGBB");
-            return false;
-        }
-        if(type == ""){
-            $("#type-error").text("Šis lauks ir obligāts.");
-            return false;
-        }
         return true;
     }
     //nosūta form info serverim
@@ -131,8 +125,7 @@ else: ?>
             type: $("#type").val(),
             everyYear: $("#everyYear").is(":checked") ? 1 : 0,
             time: $("#time").val(),
-            description: $("#description").val(),
-            color: $("#color").val()
+            description: $("#description").val()
         }
         $.ajax({
             url: 'server.php',
