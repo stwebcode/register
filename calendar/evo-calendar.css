@@ -202,18 +202,18 @@ th[colspan="7"]::after {
             transform: translateX(-50%);
     background-color: rgba(135, 115, 193, 0.15);
 }
-tr.calendar-header {
+/* tr.calendar-header {
 
-}
+} */
 tr.calendar-header .calendar-header-day {
     padding: 10px;
     text-align: center;
     color: #5a5a5a;
 }
 
-tr.calendar-body {
+/* tr.calendar-body {
 
-}
+} */
 tr.calendar-body .calendar-day {
     padding: 10px 0;
 }

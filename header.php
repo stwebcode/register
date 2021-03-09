@@ -28,7 +28,9 @@
         <div id="logo-container"><a href="index.php"><img id="logo" src="images/logo.png"></a></div>
         <ul>
             <li><a href="index.php">Sākums</a></li>
-            
+            <li><a href="index.php">Sākums</a></li>
+            <li><a href="index.php">Sākums</a></li>
+            <li><a href="index.php">Sākums</a></li>
         </ul>
         <?php
         echo "

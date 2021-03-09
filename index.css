@@ -119,7 +119,7 @@ footer{
 }
 #show-event-form{
     width: 100%;
-    background: rgba(0,173,181,.15);
+    background: #e845452c;
     color: white;
     border: none;
     padding: 6px;
