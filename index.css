@@ -56,7 +56,7 @@ a:hover{
 }
 #header ul{
     display: grid;
-    grid-template-columns: repeat(5,minmax(90px,120px));
+    grid-template-columns: repeat(auto-fit,minmax(90px,120px));
     grid-gap: 5px;
 }
 #header li{
@@ -75,6 +75,7 @@ a:hover{
 #header-user{
     display: flex;
     align-items: center;
+    padding-right:20px;
 }
 #header-user  *~*{ /* *~* nozīmē jebkas, pirms kura ir "sibling." Rezultātā tiek atlasīti visi elementi, izlaižot pirmo */
     margin-left: 10px;

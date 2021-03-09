@@ -5,10 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="calendar/evo-calendar.min.css" />
-    <link rel="stylesheet" href="calendar/evo-calendar.midnight-blue.min.css" />
-    <link rel="stylesheet" href="calendar/evo-calendar.orange-coral.min.css" />
-    <link rel="stylesheet" href="calendar/evo-calendar.royal-navy.min.css" />
+    <link rel="stylesheet" href="calendar/evo-calendar.css" />
+    <link rel="stylesheet" href="calendar/evo-calendar.midnight-blue.css" />
     <link rel="stylesheet" href="index.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>TODO: title</title>
@@ -35,8 +33,8 @@
         <?php
         echo "
         <div id=\"header-user\">
-            <div>{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}</div>
             <img src='images/30x30/{$_SESSION['user']['image']}' alt=''>
+            <div>{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}</div>
             <a href='logout.php'>Izlogoties</a>
         </div>";
         ?>

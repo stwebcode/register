@@ -242,6 +242,7 @@ if(isset($_SESSION['user']['id']))
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
                     errorOut(ErrorType.SUCCESS, data.message)
+                    window.location.href = "index.php";
                     return;
 
                 // Ja serveris atbild ar 404, 500 u.c. (Not found / Failed)
