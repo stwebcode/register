@@ -146,7 +146,7 @@ class DatabaseManager{
         return $user;
     }
 
-    public function get_events(){
+    public function get_events($courseID){
         $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out ORDER BY time";
         
         $stmt = $this->CONN->prepare($sql);

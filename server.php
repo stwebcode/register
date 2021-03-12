@@ -100,7 +100,7 @@ if($_POST['action'] == "get_courses"){
 }
 
 if($_POST['action'] == "get_events"){
-    echo json_encode($db->get_events());
+    echo json_encode($db->get_events($_SESSION['user']['courseID']));
 }
 
 if($_POST['action'] == "insert_event"){

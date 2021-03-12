@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 07, 2021 at 07:23 PM
+-- Generation Time: Mar 12, 2021 at 09:41 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -37,6 +37,7 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `course`) VALUES
+(0, 'visi kursi'),
 (1, '1.A'),
 (2, '1.C/K'),
 (3, '1.D/H/S'),
@@ -101,11 +102,31 @@ INSERT INTO `events` (`id`, `name`, `date`, `type`, `everyYear`, `time`, `descri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `events_courses`
+--
+
+CREATE TABLE `events_courses` (
+  `eventID` int(11) NOT NULL,
+  `courseID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `events_courses`
+--
+
+INSERT INTO `events_courses` (`eventID`, `courseID`) VALUES
+(2, 1),
+(2, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Stand-in structure for view `events_out`
 -- (See below for the actual view)
 --
 CREATE TABLE `events_out` (
 `id` int(11)
+,`courseID` varchar(11)
 ,`name` varchar(255)
 ,`date` date
 ,`type` varchar(255)
@@ -184,7 +205,9 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseI
 (42, 'First', 'Last', '', 1, 12, 'user123', '$argon2i$v=19$m=65536,t=4,p=1$VHlGLktyQkJ3NnplRkJ2MA$jToWc0BAkn//wSyFFLhOkVnJTQBcqrvIyFKRCpYAIqg', '2021-02-19 15:51:38', ''),
 (43, 'Filips', 'Šaberts', 'active', 2, 24, 'Filipssh', '$argon2i$v=19$m=65536,t=4,p=1$TDJxdWk0b1hGdlRTOG9Pag$Et9zhB1f+X/JXLhnAuI6TF4sv8m2p/p8zC6srT0qptA', '2021-02-27 21:15:46', 'default.png'),
 (44, 'Filips', 'Šaberts', 'active', 1, 24, 'Filipssh2', '$argon2i$v=19$m=65536,t=4,p=1$MS5YR3hOYk1Id1ZZUDAxbg$qcNPDhVlu0Ws2C1UHwUCcDg0NZfKQZKEjJiAOSDOVfI', '2021-03-05 22:01:38', '1614974498.png'),
-(46, '&lt;b&gt;filips&lt;/b&gt;', 'Šaberts', 'active', 1, 3, 'Filipssh3', '$argon2i$v=19$m=65536,t=4,p=1$ZU1OaUNtWGdoLnlDNzd4Zw$BW9H1inKsoJFeFedZ42gs96/a2lsc7x+Lq0bcg0sIME', '2021-03-06 22:11:06', 'default.png');
+(46, '&lt;b&gt;filips&lt;/b&gt;', 'Šaberts', 'active', 1, 3, 'Filipssh3', '$argon2i$v=19$m=65536,t=4,p=1$ZU1OaUNtWGdoLnlDNzd4Zw$BW9H1inKsoJFeFedZ42gs96/a2lsc7x+Lq0bcg0sIME', '2021-03-06 22:11:06', 'default.png'),
+(47, 'filips', 'Šaberts', 'active', 1, 24, 'Filipssh4', '$argon2i$v=19$m=65536,t=4,p=1$TVV0NmE5VUtVcTJVSzF4UQ$1+yfhdrgrK+CRH2o0Nw9c0JaYx2VKchowuMaYPJWlaI', '2021-03-09 11:00:37', '1615280436.png'),
+(48, 'fiieddfdsg', 'dfgdfgdfg', 'active', 1, 2, 'Filipssh5', '$argon2i$v=19$m=65536,t=4,p=1$TUtJSTFkTkovRHJmdk1kMg$lMSEkMlakO8AMAQWTHgigP++ta1WjjLnqzChTyS5iGA', '2021-03-09 11:04:45', 'default.png');
 
 -- --------------------------------------------------------
 
@@ -193,7 +216,7 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseI
 --
 DROP TABLE IF EXISTS `events_out`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `events_out`  AS SELECT `events`.`id` AS `id`, `events`.`name` AS `name`, `events`.`date` AS `date`, `events`.`type` AS `type`, coalesce(`event_colors`.`color`,(select `event_colors`.`color` from `event_colors` where `event_colors`.`id` = 0)) AS `color`, `events`.`everyYear` AS `everyYear`, `events`.`time` AS `time`, `events`.`description` AS `description` FROM (`events` left join `event_colors` on(`events`.`type` = `event_colors`.`type`)) ORDER BY `events`.`id` ASC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `events_out`  AS SELECT `events`.`id` AS `id`, coalesce(`events_courses`.`courseID`,'0') AS `courseID`, `events`.`name` AS `name`, `events`.`date` AS `date`, `events`.`type` AS `type`, coalesce(`event_colors`.`color`,(select `event_colors`.`color` from `event_colors` where `event_colors`.`id` = 0)) AS `color`, `events`.`everyYear` AS `everyYear`, `events`.`time` AS `time`, `events`.`description` AS `description` FROM ((`events` left join `event_colors` on(`events`.`type` = `event_colors`.`type`)) left join `events_courses` on(`events_courses`.`eventID` = `events`.`id`)) ORDER BY `events`.`id` ASC ;
 
 --
 -- Indexes for dumped tables
@@ -210,6 +233,13 @@ ALTER TABLE `courses`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `events_courses`
+--
+ALTER TABLE `events_courses`
+  ADD PRIMARY KEY (`eventID`,`courseID`),
+  ADD KEY `courseID` (`courseID`);
 
 --
 -- Indexes for table `event_colors`
@@ -239,7 +269,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -251,7 +281,7 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `event_colors`
 --
 ALTER TABLE `event_colors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -263,11 +293,18 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `events_courses`
+--
+ALTER TABLE `events_courses`
+  ADD CONSTRAINT `events_courses_ibfk_1` FOREIGN KEY (`eventID`) REFERENCES `events` (`id`),
+  ADD CONSTRAINT `events_courses_ibfk_2` FOREIGN KEY (`courseID`) REFERENCES `courses` (`id`);
 
 --
 -- Constraints for table `users`
