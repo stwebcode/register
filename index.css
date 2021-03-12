@@ -6,20 +6,23 @@
     font-family: 'Crimson Pro', serif;
 }
 body{
-    min-height: 120vh;
+    min-height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
+}
+main{
+    position: relative;
 }
 input,select,button{
     padding: 5px;
 }
-button{
+#header button{
     border: none;
     background: #dddddd;
     min-width: 40px;
     cursor: pointer;
 }
-button:hover{
+#header button:hover{
     background: #ebebeb;
 }
 a{
@@ -36,6 +39,7 @@ a:hover{
 #header{
     position: sticky;
     top: 0;
+    z-index: 99999;
 }
 #header nav{
     height: 90px;
@@ -52,7 +56,7 @@ a:hover{
 }
 #header ul{
     display: grid;
-    grid-template-columns: repeat(5,minmax(90px,120px));
+    grid-template-columns: repeat(auto-fit,minmax(90px,120px));
     grid-gap: 5px;
 }
 #header li{
@@ -71,6 +75,7 @@ a:hover{
 #header-user{
     display: flex;
     align-items: center;
+    padding-right:20px;
 }
 #header-user  *~*{ /* *~* nozīmē jebkas, pirms kura ir "sibling." Rezultātā tiek atlasīti visi elementi, izlaižot pirmo */
     margin-left: 10px;
@@ -82,4 +87,52 @@ footer{
     display: grid;
     align-items: center;
     color: white;
+}
+/* INDEX PAGE */
+.shadowbox{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+    height:100%;
+    z-index: 50;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background: #00000075;
+} 
+.single-column-form{
+    background: #fafafa;
+    padding: 30px;
+    display: grid;
+    grid-gap: 20px;
+}
+.two-column-form{
+    background: #fafafa;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 20px;
+}
+#new-event .two-column-form div *{
+    width: 100%;
+}
+#show-event-form{
+    width: 100%;
+    background: #e845452c;
+    color: white;
+    border: none;
+    padding: 6px;
+    font-size: 16px;
+}
+#show-event-form:hover{
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+}
+.event-desc{
+    word-break: break-all;
+}
+#close-event-form{
+    width: 30px;
+    float: right;
 }

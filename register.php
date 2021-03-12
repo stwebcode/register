@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-if(isset($_SESSION['user_id']))
+if(isset($_SESSION['user']['id']))
 {
 	header('location:index.php');
 }
@@ -242,6 +242,7 @@ if(isset($_SESSION['user_id']))
                 // Ja serveris atbild ar 200 (Success)
                 }, (data) => {
                     errorOut(ErrorType.SUCCESS, data.message)
+                    window.location.href = "index.php";
                     return;
 
                 // Ja serveris atbild ar 404, 500 u.c. (Not found / Failed)

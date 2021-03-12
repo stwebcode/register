@@ -18,6 +18,9 @@ abstract Class ErrorType{
 
     // Error tips attēlu kļūdām
     const IMAGE = "image_error";
+
+    // Error tips kalendāra kļūdām
+    const CALENDAR = "calendar_error";
     
     // Error tips nenoteiktām kļūdām
     const NONE = "none";
@@ -96,14 +99,56 @@ if($_POST['action'] == "get_courses"){
     echo json_encode($db->get_courses()); // Kā ir labāk darīt? Tā, kā 91. un 92. rinda? Vai tā, kā šajā rindā? Vai tam nav nozīmes, jo šādi sanāk īsāk?
 }
 
+if($_POST['action'] == "get_events"){
+    echo json_encode($db->get_events($_SESSION['user']['courseID']));
+}
+
+if($_POST['action'] == "insert_event"){
+
+    if(!isset($_SESSION['user']) || $_SESSION['user']['roleID'] != 2){
+        out("Neautorizēts lietotājs.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+
+    $name = htmlspecialchars($_POST['eventData']['name'], ENT_QUOTES, 'UTF-8');
+    $date = htmlspecialchars($_POST['eventData']['date'], ENT_QUOTES, 'UTF-8');
+    $type = htmlspecialchars($_POST['eventData']['type'], ENT_QUOTES, 'UTF-8');
+    $everyYear = htmlspecialchars($_POST['eventData']['everyYear'], ENT_QUOTES, 'UTF-8');
+    $time = htmlspecialchars($_POST['eventData']['time'], ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars($_POST['eventData']['description'], ENT_QUOTES, 'UTF-8');
+
+    if(strlen($name) == 0){
+        out("Nav ievadīts nosaukums.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($date == ""){
+        out("Nav ievadīts datums.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($time == ""){
+        out("Nav ievadīts laiks.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+    if($type == ""){
+        out("Nav ievadīts tips.", $is_error=true, $type=ErrorType::CALENDAR);
+    }
+
+    $eventData = [
+        'name' => $name,
+        'date' => $date,
+        'type' => $type,
+        'everyYear' => $everyYear,
+        'time' => $time,
+        'description' => $description
+    ];
+    // var_dump($eventData);
+
+    echo json_encode($db->insert_event($eventData));
+}
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
 
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $courseID = $_POST['courseID'];
+    $firstname = htmlspecialchars($_POST['firstname'], ENT_QUOTES, 'UTF-8');
+    $lastname = htmlspecialchars($_POST['lastname'], ENT_QUOTES, 'UTF-8');
+    $courseID = htmlspecialchars($_POST['courseID'], ENT_QUOTES, 'UTF-8');
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
-    $password = $_POST['password'];
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
     $status = 'active';
 
     $hash = password_hash($password, PASSWORD_ARGON2I);
@@ -178,7 +223,7 @@ if($_POST['action'] == "insert_user"){
 // Autorizēšanās
 if($_POST['action'] == "login_user"){
     $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
-    $password = $_POST['password'];
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
 
     // Pārbaudam, vai lietotājvārds ir derīgs. Saglabājam funkcijas izvadi $res mainīgajā un skatamies kas pa error tiek izmests.
     // if(!($res = $db->check_username($username))['success']){
@@ -197,11 +242,13 @@ if($_POST['action'] == "login_user"){
     }
 
     if($login){
-        $_SESSION['user_id'] = $login['id'];
-        $_SESSION['username'] = $login['username'];
-        $_SESSION['firstname'] = $login['firstname'];
-        $_SESSION['lastname'] = $login['lastname'];
-        $_SESSION['image'] = $login['image'];
+        $_SESSION['user'] = $login;
+        unset($_SESSION['user']['password']); // dzēš password no user session mainīgā. Man šķiet, ka tā būtu drošāk. -F 
+        // $_SESSION['user_id'] = $login['id'];
+        // $_SESSION['username'] = $login['username'];
+        // $_SESSION['firstname'] = $login['firstname'];
+        // $_SESSION['lastname'] = $login['lastname'];
+        // $_SESSION['image'] = $login['image'];
         out('Veiksmīga pieslēgšanās');
     }
 

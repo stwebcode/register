@@ -145,6 +145,33 @@ class DatabaseManager{
 
         return $user;
     }
+
+    public function get_events($courseID){
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out ORDER BY time";
+        
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute();
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row["everyYear"] = ($row["everyYear"] == 1) ? true : false;
+            $out[] = $row;
+        }
+
+        return $out;
+    }
+    
+    public function insert_event($eventData){
+        $sql = "INSERT INTO `events`(`name`, `date`, `type`, `everyYear`, `time`, `description`) VALUES (?,?,?,?,?,?)";
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute(array($eventData["name"],$eventData["date"],$eventData["type"],$eventData["everyYear"],$eventData["time"],$eventData["description"]));
+
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out WHERE `id` = (SELECT MAX(`id`) FROM events_out)";
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row["everyYear"] = ($row["everyYear"] == 1) ? true : false;
+        return $row;
+    }
 }
 
 ?>
