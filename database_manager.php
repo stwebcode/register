@@ -147,7 +147,7 @@ class DatabaseManager{
     }
 
     public function get_events($courseID){
-        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out ORDER BY time";
+        $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out WHERE `courseID` = '".$courseID."' OR `courseID` = 0 ORDER BY time";
         
         $stmt = $this->CONN->prepare($sql);
         $stmt->execute();
@@ -160,10 +160,16 @@ class DatabaseManager{
         return $out;
     }
     
-    public function insert_event($eventData){
+    public function insert_event($eventData, $courseID){
         $sql = "INSERT INTO `events`(`name`, `date`, `type`, `everyYear`, `time`, `description`) VALUES (?,?,?,?,?,?)";
         $stmt = $this->CONN->prepare($sql);
         $stmt->execute(array($eventData["name"],$eventData["date"],$eventData["type"],$eventData["everyYear"],$eventData["time"],$eventData["description"]));
+
+        $lastID = $this->CONN->lastInsertId();
+
+        $sql = "INSERT INTO `events_courses`(`eventID`, `courseID`) VALUES (?, ?)";
+        $stmt = $this->CONN->prepare($sql);
+        $stmt->execute(array($lastID, $courseID));
 
         $sql = "SELECT `id`,`name`, DATE_FORMAT(`date`, '%m/%d/%Y') AS `date` , `type`, `everyYear`, `color`, DATE_FORMAT(`time`, '%H:%i') AS `time`, `description` FROM events_out WHERE `id` = (SELECT MAX(`id`) FROM events_out)";
         $stmt = $this->CONN->prepare($sql);
