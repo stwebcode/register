@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2021 at 09:41 AM
+-- Generation Time: Mar 15, 2021 at 03:02 PM
 -- Server version: 10.4.17-MariaDB
--- PHP Version: 8.0.2
+-- PHP Version: 8.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -97,7 +97,8 @@ INSERT INTO `events` (`id`, `name`, `date`, `type`, `everyYear`, `time`, `descri
 (44, 'cits2', '2021-03-11', 'NESAISTĪTS', 0, '12:00:00', 'dsgdhfgfjgfhdgsfegsrhdtfjhgfghdgsfgrdhfjhhdgsfeasgdhfj'),
 (45, 'cits3', '2021-03-11', 'NESAISTĪTS', 0, '23:19:00', 'dsgdhfgfjgfhdgsfegsrhdtfjhgfghdgsfgrdhfjhhdgsfeasgdhfj'),
 (46, 'ekskursija', '2021-03-12', 'Ekskursija', 1, '03:06:00', 'asferwfe'),
-(47, 'atceres diena', '2021-03-11', 'Atceres diena', 0, '12:09:00', 'sdsdfsdfsd');
+(47, 'atceres diena', '2021-03-11', 'Atceres diena', 0, '12:09:00', 'sdsdfsdfsd'),
+(48, 'Pārbaudes darbs', '2021-03-16', 'Eksāmens', 0, '10:30:00', 'Pārbaudes darbs matemātikā');
 
 -- --------------------------------------------------------
 
@@ -116,7 +117,8 @@ CREATE TABLE `events_courses` (
 
 INSERT INTO `events_courses` (`eventID`, `courseID`) VALUES
 (2, 1),
-(2, 2);
+(2, 2),
+(48, 12);
 
 -- --------------------------------------------------------
 
@@ -207,7 +209,8 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `status`, `roleID`, `courseI
 (44, 'Filips', 'Šaberts', 'active', 1, 24, 'Filipssh2', '$argon2i$v=19$m=65536,t=4,p=1$MS5YR3hOYk1Id1ZZUDAxbg$qcNPDhVlu0Ws2C1UHwUCcDg0NZfKQZKEjJiAOSDOVfI', '2021-03-05 22:01:38', '1614974498.png'),
 (46, '&lt;b&gt;filips&lt;/b&gt;', 'Šaberts', 'active', 1, 3, 'Filipssh3', '$argon2i$v=19$m=65536,t=4,p=1$ZU1OaUNtWGdoLnlDNzd4Zw$BW9H1inKsoJFeFedZ42gs96/a2lsc7x+Lq0bcg0sIME', '2021-03-06 22:11:06', 'default.png'),
 (47, 'filips', 'Šaberts', 'active', 1, 24, 'Filipssh4', '$argon2i$v=19$m=65536,t=4,p=1$TVV0NmE5VUtVcTJVSzF4UQ$1+yfhdrgrK+CRH2o0Nw9c0JaYx2VKchowuMaYPJWlaI', '2021-03-09 11:00:37', '1615280436.png'),
-(48, 'fiieddfdsg', 'dfgdfgdfg', 'active', 1, 2, 'Filipssh5', '$argon2i$v=19$m=65536,t=4,p=1$TUtJSTFkTkovRHJmdk1kMg$lMSEkMlakO8AMAQWTHgigP++ta1WjjLnqzChTyS5iGA', '2021-03-09 11:04:45', 'default.png');
+(48, 'fiieddfdsg', 'dfgdfgdfg', 'active', 1, 2, 'Filipssh5', '$argon2i$v=19$m=65536,t=4,p=1$TUtJSTFkTkovRHJmdk1kMg$lMSEkMlakO8AMAQWTHgigP++ta1WjjLnqzChTyS5iGA', '2021-03-09 11:04:45', 'default.png'),
+(49, 'Jānis', 'Zaķis', 'active', 2, 12, 'janis03', '$argon2i$v=19$m=65536,t=4,p=1$QzMzZ1pjOG5iOWMySmJIUg$tz2kfxOemaXnXwtk/Y4rNP2A0wuGVeJkIwRLXsPUmaY', '2021-03-15 16:00:28', 'default.png');
 
 -- --------------------------------------------------------
 
@@ -275,7 +278,7 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `event_colors`
@@ -293,7 +296,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- Constraints for dumped tables
