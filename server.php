@@ -139,7 +139,7 @@ if($_POST['action'] == "insert_event"){
     ];
     // var_dump($eventData);
 
-    echo json_encode($db->insert_event($eventData));
+    echo json_encode($db->insert_event($eventData, $_SESSION['user']['courseID']));
 }
 // Ja klients vēlas pievienot lietotāju
 if($_POST['action'] == "insert_user"){
