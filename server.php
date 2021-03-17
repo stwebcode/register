@@ -237,6 +237,10 @@ if($_POST['action'] == "login_user"){
     
     $login = $db->login($username, $password);
 
+    if(!$login) {
+        out("Nepareizs lietotājvārds vai parole!", $is_error=true, $type=ErrorType::PASSWORD);
+    }
+
     if($login['status'] == 'banned') {
         out("Jūsu profils ir nobloķēts par noteikumu pārkāpšanu!", $is_error=true, $type=ErrorType::STATUS);
     }
@@ -252,7 +256,7 @@ if($_POST['action'] == "login_user"){
         out('Veiksmīga pieslēgšanās');
     }
 
-    out("Nepareizs lietotājvārds vai parole!", $is_error=true, $type=ErrorType::PASSWORD);
+    // out("Nepareizs lietotājvārds vai parole!", $is_error=true, $type=ErrorType::PASSWORD);
     // Ja tomēr autorizācija nebija veiksmīga, nosūtam 503. kodu signalozējot, ka kļūda ar datubāzi (šai līnijai nevajadzētu tikt sasniegtai).
     http_response_code(503);
 }
