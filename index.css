@@ -1,84 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
-*{
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Crimson Pro', serif;
-}
-body{
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-}
-main{
-    position: relative;
-}
-input,select,button{
-    padding: 5px;
-}
-#header button{
-    border: none;
-    background: #dddddd;
-    min-width: 40px;
-    cursor: pointer;
-}
-#header button:hover{
-    background: #ebebeb;
-}
-a{
-    text-decoration: none;
-    color: rgb(0, 66, 141);
-}
-a:visited{
-    color: rgb(0, 66, 141);
-}
-a:hover{
-    color: rgb(0, 83, 179);
 }
 /* HEADER */
-#header{
+nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    /*Relative to 1% of the height of the browser window size*/
+    min-height: 10vh;
+    background-color: #222233;
+    font-family: 'Raleway', sans-serif;
     position: sticky;
     top: 0;
-    z-index: 99999;
+    z-index: 9999;
 }
-#header nav{
-    height: 90px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    background: #fafafa;
-    transition: height 100ms ease;
+.logo {
+    color: #AACCFF;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 20px;
 }
-#logo-container{
-    height: inherit;
-}
-#logo{
-    height: 100%;
-}
-#header ul{
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(90px,120px));
-    grid-gap: 5px;
-}
-#header li{
-    list-style-type: none;
-    display: grid;
-    align-items: center;
-}
-#header li a{
-    padding:20px 10px;
-    text-align: center;
-    transition: all 200ms ease-in-out;
-}
-#header li a:hover{
-    background: #ebebeb;
-}
-#header-user{
+.nav-links {
     display: flex;
     align-items: center;
-    padding-right:20px;
 }
-#header-user  *~*{ /* *~* nozīmē jebkas, pirms kura ir "sibling." Rezultātā tiek atlasīti visi elementi, izlaižot pirmo */
-    margin-left: 10px;
+.nav-links li {
+    list-style: none;
+}
+.nav-links a {
+    color: #AACCFF;
+    text-decoration: none;
+    letter-spacing: 2px;
+    font-weight: bold;
+    font-size: 14px;
+} 
+.nav-links > * {
+    margin-left: 20px;
+}
+
+.burger {
+    display: none;
+    cursor: pointer;
+}
+.burger div {
+    width: 25px;
+    height: 3px;
+    background-color: #AACCFF;
+    margin: 5px;
+    transition: all 0.3s ease; /* Pārveido uz x */
+}
+
+#logout-btn {
+    color: #E84545;
+}
+
+#user-pic {
+   margin-top: 4px;
+}
+
+/*Mobile*/
+@media screen and (max-width: 768px) {
+    body {
+        overflow-x: hidden;/*Jo labajā pusē atrodas neaktivizētā mobile menu*/
+    }
+    .nav-links {
+        position: absolute;
+        right: 0px;
+        top: 10vh;
+        height: 90vh;
+        background-color: #222233;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        width: 50%;
+        transform: translateX(100%);/*Atrodas labajā malā neredzama*/
+        transition: transform 0.5s ease-in;/*ieslaido pakāpeniski (animācija)*/
+        z-index: 1;
+    }
+    .nav-links li {
+        opacity: 0;/*Sākumā caurspīdīgs, neredzams, lai varētu animēt*/
+    }
+    .burger {
+        display: block;
+    }
+    #user-pic {
+        display: none;
+    }
+}
+
+.nav-active {
+    transform: translateX(0%);/*Kad uzkliko uz burger, tad ieslaido no labās puses*/
+    z-index: 1;
+}
+
+@keyframes navLinkFade {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+/*burgera līnijas pārveido par x*/
+.burgerX .line1 {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+.burgerX .line2 {
+    opacity: 0;
+}
+.burgerX .line3 {
+    transform: rotate(45deg) translate(-5px, -6px);
 }
 /* FOOTER */
 footer{
