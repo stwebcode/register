@@ -16,12 +16,6 @@ nav {
     top: 0;
     z-index: 9999;
 }
-.logo {
-    color: #AACCFF;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 20px;
-}
 .nav-links {
     display: flex;
     align-items: center;
