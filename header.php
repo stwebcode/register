@@ -43,11 +43,10 @@
             <li id="user-pic">
                 <?php echo "<img id='profile-pic' src='images/30x30/{$_SESSION['user']['image']}'>"; ?>
             </li>
+            <li>
+                <a href="#"><?php echo "{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}"; ?></a>
+            </li>
         </ul>
-        <!-- <div class="user">
-            <p style="margin-right: 10px;"><?php echo "{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}"; ?></p>
-            <?php echo "<img id='profile-pic' src='images/30x30/{$_SESSION['user']['image']}'>"; ?>
-        </div> -->
         <div class="burger">
             <div class="line1"></div>
             <div class="line2"></div>
