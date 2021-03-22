@@ -25,7 +25,7 @@
 <body>
     <nav>
         <div class="logo">
-            <a href="index.php"><img src="images/logo.png" height="80px" width="150px"></a>
+            <a href="index.php"><img id="logo" src="images/logo.png"></a>
         </div>
         <ul class="nav-links">
             <li>

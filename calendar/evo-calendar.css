@@ -141,7 +141,6 @@ input:focus, textarea:focus, button:focus {
 .calendar-inner {
     position: relative;
     padding: 50px 10px 115px 10px;
-    
     float: left;
     width: 100%;
     max-width: calc(100% - 600px);

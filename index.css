@@ -3,6 +3,14 @@
     margin: 0;
     padding: 0;
 }
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 /* HEADER */
 nav {
     display: flex;
@@ -44,6 +52,11 @@ nav {
     background-color: #AACCFF;
     margin: 5px;
     transition: all 0.3s ease; /* Pārveido uz x */
+}
+
+#logo {
+    width: 150px;
+    height: auto;
 }
 
 #logout-btn {
@@ -115,10 +128,30 @@ nav {
 /* FOOTER */
 footer{
     text-align: center;
-    background: #222327;
+    background: #222233;
     display: grid;
     align-items: center;
-    color: white;
+    font-family: 'Raleway', sans-serif;
+    padding: 10px 0;
+    margin-top: auto;
+}
+footer p{
+    font-size: 0.9rem;
+    color: grey;
+}
+footer ul{
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 20px 0;
+}
+footer a{
+    text-decoration: none;
+    color: rgb(235, 233, 233);
+    padding: 0 15px;
+}
+footer a:hover{
+    text-decoration: underline;
 }
 /* INDEX PAGE */
 .shadowbox{
