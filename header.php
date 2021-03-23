@@ -10,36 +10,73 @@
     <link rel="stylesheet" href="index.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>TODO: title</title>
-    <script>
+    <!-- <script>
         window.onscroll = function(){
             if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
-                $("#header nav").css("height","50px");
-                $("#header li a").css("padding","10px 6px");
+                $("nav").css("height","50px");
+                $(".nav-links li a").css("padding","10px 6px");
             } else {
-                $("#header nav").css("height","90px");
-                $("#header li a").css("padding","20px 10px");
+                $("nav").css("min-height","10vh");
+                $(".nav-links li a").css("padding","0");
             }
         }
-    </script>
+    </script> -->
 </head>
 <body>
-<div id="header">
     <nav>
-        <div id="logo-container"><a href="index.php"><img id="logo" src="images/logo.png"></a></div>
-        <ul>
-            <li><a href="index.php">Sākums</a></li>
-            <li><a href="index.php">Sākums</a></li>
-            <li><a href="index.php">Sākums</a></li>
-            <li><a href="index.php">Sākums</a></li>
+        <div class="logo">
+            <a href="index.php"><img id="logo" src="images/logo.png"></a>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="index.php">Sākums</a><!--Uz :hover varētu bounce animation-->
+            </li>
+            <li>
+                <a href="#">Pasākumi</a>
+            </li>
+            <li>
+                <a href="#">Par mums</a>
+            </li>
+            <li>
+                <?php echo "<a href='logout.php' id='logout-btn'>Izlogoties</a>"; ?>
+            </li>
+            <li id="user-pic">
+                <?php echo "<img id='profile-pic' src='images/30x30/{$_SESSION['user']['image']}'>"; ?>
+            </li>
+            <li>
+                <a href="#"><?php echo "{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}"; ?></a>
+            </li>
         </ul>
-        <?php
-        echo "
-        <div id=\"header-user\">
-            <img src='images/30x30/{$_SESSION['user']['image']}' alt=''>
-            <div>{$_SESSION['user']['firstname']} {$_SESSION['user']['lastname']}</div>
-            <a href='logout.php'>Izlogoties</a>
-        </div>";
-        ?>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
     </nav>
-</div>
+
+    <script>
+        const burger = document.querySelector('.burger');
+        const nav = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-links li');
+
+        //Toggle Nav
+        burger.onclick = function(){
+            //Slaido navigāciju
+            nav.classList.toggle('nav-active');
+
+            //Animate Links
+            navLinks.forEach((link, index) => {
+                if(link.style.animation){
+                    link.style.animation = '';
+                }else{
+                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.5}s`;
+                    //0.5 aizturi vajag, jo 0.5s ieslaido nav fons
+                }
+            });
+
+            //Burger animation
+            burger.classList.toggle('burgerX');
+        }
+    </script>
+</body>
 <main>
